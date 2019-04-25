@@ -2,6 +2,7 @@ package com.example.lifecycle;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 
@@ -18,7 +19,8 @@ public class MainActivity extends AppCompatActivity {
         myadapter.setmNumber(movies_size);
         rv.setAdapter(myadapter);
 
-        LinearLayoutManager layoutManager= new LinearLayoutManager(this);
+        //LinearLayoutManager layoutManager= new LinearLayoutManager(this);
+        GridLayoutManager layoutManager = new GridLayoutManager(this,2);
         rv.setLayoutManager(layoutManager);
 
     }

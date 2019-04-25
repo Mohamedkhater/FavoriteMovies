@@ -53,7 +53,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             movieName.setText("item"+i);
             message=movieName.getText().toString();
             mToast=Toast.makeText(itemView.getContext(),message,Toast.LENGTH_SHORT);
-            movieName.setOnClickListener(this);
+            itemView.setOnClickListener(this);
 
 
         }
