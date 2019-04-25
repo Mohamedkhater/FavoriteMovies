@@ -1,5 +1,7 @@
 package com.example.lifecycle;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -9,10 +11,14 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
     private int mNumber;
+    TextView movieName;
+
     public void setmNumber(int i){
         this.mNumber=i;
+
     }
 
 
@@ -36,10 +42,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         return mNumber;
     }
 
-    class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        TextView movieName;
+    class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+        public static final String name="movie Name";
         private Toast mToast;
         private String message;
+        public Intent intent;
         private ImageView movieThumbnail;
 
 
@@ -49,6 +56,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
             movieThumbnail=itemView.findViewById(R.id.movie_image);
 
         }
+
         public void bind(int i){
             movieName.setText("movie "+i);
             message=movieName.getText().toString();
@@ -59,10 +67,22 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         }
 
         @Override
-        public void onClick(View v) {mToast.show();
-
-
+        public void onClick(View v) {
+            intent= new Intent(v.getContext(),DetailActivity.class);
+            intent.putExtra(MoviesAdapter.MoviesViewHolder.name,movieName.getText());
+            v.getContext().startActivity(intent);
 
         }
+
+     /*   @Override
+        public void onClick(View v) {mToast.show();
+
+            Intent intent= new Intent(MainActivity,DetailActivity.class);
+            intent.putExtra(name,movieName.getText());
+
+
+
+
+        }*/
     }
 }
