@@ -29,6 +29,9 @@ public class MainActivity extends AppCompatActivity {
     String popularMovies="http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
 
     String topratedMovies="http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
+    String defaultquery=popularMovies;
+    public static final String API_KEY="api_key";
+    public static final String api_key_value="51d850fe504b9b9ebd6df40d48d30cf4";
 
 
 
@@ -40,8 +43,8 @@ public class MainActivity extends AppCompatActivity {
 
         pbar=findViewById(R.id.progress_bar);
         rv=findViewById(R.id.movies_rv);
-        //MovieTask movieTask= new MovieTask();
-      //  movieTask.execute(topratedMovies);
+        MovieTask movieTask= new MovieTask();
+        movieTask.execute(defaultquery);
 
 
 
@@ -84,6 +87,7 @@ public class MainActivity extends AppCompatActivity {
         @Override
         protected void onPreExecute() {
             pbar.setVisibility(View.VISIBLE);
+            rv.setVisibility(View.INVISIBLE);
         }
 
         @Override
@@ -93,6 +97,7 @@ public class MainActivity extends AppCompatActivity {
             mtopratedList= new ArrayList<>();
             String data;
             try{
+                
                 data= utils.fetchData(urls[0]);
 
                 return data;
@@ -112,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 return;
             }
             pbar.setVisibility(View.INVISIBLE);
+            rv.setVisibility(View.VISIBLE);
 
 
             mpopularList=utils.parseJSON(s);
