@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -27,6 +28,7 @@ public class MainActivity extends AppCompatActivity {
     ArrayList<Movie> mpopularList;
     String popularMovies="http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
 
+    String topratedMovies="http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
 
 
 
@@ -38,9 +40,10 @@ public class MainActivity extends AppCompatActivity {
 
         pbar=findViewById(R.id.progress_bar);
         rv=findViewById(R.id.movies_rv);
+        //MovieTask movieTask= new MovieTask();
+      //  movieTask.execute(topratedMovies);
 
-        MovieTask movieTask=new MovieTask();
-        movieTask.execute(popularMovies);
+
 
        // myadapter.setmNumber(movies_size);
 
@@ -54,8 +57,21 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        menu=findViewById(R.layout.)
+        getMenuInflater().inflate(R.menu.main,menu);
 
+        return true;
+    }
+     @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        MovieTask movieTask=new MovieTask();
+
+        if(item.getItemId()==R.id.sort_by_popularity){
+            movieTask.execute(popularMovies);
+
+        }
+        else if(item.getItemId()==R.id.sort_by_rating){
+            movieTask.execute(topratedMovies);
+        }
         return true;
     }
 
@@ -63,7 +79,6 @@ public class MainActivity extends AppCompatActivity {
         NetworkUtils utils= new NetworkUtils();
 
 
-        String topratedMovies="http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
         ArrayList<Movie> mtopratedList;
 
         @Override

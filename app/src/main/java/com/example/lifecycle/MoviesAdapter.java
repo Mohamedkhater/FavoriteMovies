@@ -85,7 +85,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
 
 
-            Picasso.with(context).load(BASE_URL+movies.get(i).getPoster_path()).error(R.id.movie_image).into(movieThumbnail);
+            Picasso.with(context).load(BASE_URL+movies.get(i).getPoster_path()).into(movieThumbnail);
 
 
             movieThumbnail.setOnClickListener(this);

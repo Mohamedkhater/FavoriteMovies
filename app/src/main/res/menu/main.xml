@@ -3,10 +3,10 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item android:title="sort by popularity"
         android:id="@+id/sort_by_popularity"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
         android:orderInCategory="1"></item>
     <item android:title="sort by top rated"
-        app:showAsAction="ifRoom"
+        app:showAsAction="never"
         android:id="@+id/sort_by_rating"
         android:orderInCategory="2"></item>
 

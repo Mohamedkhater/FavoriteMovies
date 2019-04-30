@@ -10,7 +10,6 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:layout_weight="4"
-        android:src="@drawable/movie_foreground"
 
         tools:background="#229" />
 
