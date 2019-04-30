@@ -1,6 +1,7 @@
 package com.example.lifecycle;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -11,15 +12,26 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.squareup.picasso.Picasso;
+
+import java.util.ArrayList;
+
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
-    private int mNumber;
+   // private int mNumber;
     TextView movieName;
-
-    public void setmNumber(int i){
-        this.mNumber=i;
+    ArrayList<Movie>movies;
+    Context context;
+    public MoviesAdapter(ArrayList<Movie> movies, Context context){
+        this.movies=movies;
+        this.context=context;
 
     }
+
+   /* public void setmNumber(int i){
+        this.mNumber=i;
+
+    }*/
 
 
     @NonNull
@@ -39,11 +51,12 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     @Override
     public int getItemCount() {
-        return mNumber;
+        return movies.size();
     }
 
     class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public static final String name="movie Name";
+        public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
         private Toast mToast;
         private String message;
         public Intent intent;
@@ -58,10 +71,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         }
 
         public void bind(int i){
-            movieName.setText("movie "+i);
-            message=movieName.getText().toString();
-            mToast=Toast.makeText(itemView.getContext(),message,Toast.LENGTH_SHORT);
-            itemView.setOnClickListener(this);
+            movieName.setText(movies.get(i).getTitle());
+            message=movieName.getText().toString(); 
+           // mToast=Toast.makeText(itemView.getContext(),message,Toast.LENGTH_SHORT);
+
+            Picasso.with(context).load(BASE_URL+movies.get(i).getPoster_path()).error(R.id.movie_image).into(movieThumbnail);
+
+            movieThumbnail.setOnClickListener(this);
 
 
         }
@@ -69,7 +85,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         @Override
         public void onClick(View v) {
             intent= new Intent(v.getContext(),DetailActivity.class);
-            intent.putExtra(MoviesAdapter.MoviesViewHolder.name,movieName.getText());
+            intent.putExtra(MoviesAdapter.MoviesViewHolder.name,message);
             v.getContext().startActivity(intent);
 
         }
