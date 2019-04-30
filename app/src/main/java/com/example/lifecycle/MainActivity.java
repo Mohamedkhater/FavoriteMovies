@@ -20,6 +20,7 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import Utils.NetworkUtils;
+import butterknife.internal.Utils;
 
 public class MainActivity extends AppCompatActivity {
     MoviesAdapter myadapter;
@@ -30,7 +31,10 @@ public class MainActivity extends AppCompatActivity {
 
     String topratedMovies="http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
     String defaultquery=popularMovies;
+    private static final String popularity = "popularity.desc";
+
     public static final String API_KEY="api_key";
+    public static final String base_url="http://api.themoviedb.org/3/discover/movie";
     public static final String api_key_value="51d850fe504b9b9ebd6df40d48d30cf4";
 
 
@@ -44,7 +48,11 @@ public class MainActivity extends AppCompatActivity {
         pbar=findViewById(R.id.progress_bar);
         rv=findViewById(R.id.movies_rv);
         MovieTask movieTask= new MovieTask();
-        movieTask.execute(defaultquery);
+        //NetworkUtils utils= new NetworkUtils();
+        NetworkUtils utils= new NetworkUtils(popularity);
+
+        URL url=utils.makeURLFromString(base_url);
+        movieTask.execute(url);
 
 
 
@@ -67,19 +75,22 @@ public class MainActivity extends AppCompatActivity {
      @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         MovieTask movieTask=new MovieTask();
+        URL popularMoviesUrl=new NetworkUtils(popularity).makeURLFromString(base_url);
+        URL topRatedMoviesUrl= new NetworkUtils(topratedMovies).makeURLFromString(base_url);
 
         if(item.getItemId()==R.id.sort_by_popularity){
-            movieTask.execute(popularMovies);
+            movieTask.execute(popularMoviesUrl);
 
         }
         else if(item.getItemId()==R.id.sort_by_rating){
-            movieTask.execute(topratedMovies);
+            movieTask.execute(topRatedMoviesUrl);
         }
         return true;
     }
 
-    class MovieTask extends AsyncTask<String,Void,String>{
-        NetworkUtils utils= new NetworkUtils();
+    class MovieTask extends AsyncTask<URL,Void,String>{
+        //NetworkUtils utils= new NetworkUtils();
+
 
 
         ArrayList<Movie> mtopratedList;
@@ -88,17 +99,18 @@ public class MainActivity extends AppCompatActivity {
         protected void onPreExecute() {
             pbar.setVisibility(View.VISIBLE);
             rv.setVisibility(View.INVISIBLE);
+
         }
 
         @Override
-        protected String doInBackground(String... urls) {
+        protected String doInBackground(URL...urls) {
 
 
             mtopratedList= new ArrayList<>();
             String data;
             try{
-                
-                data= utils.fetchData(urls[0]);
+
+                data= NetworkUtils.fetchData(urls[0]);
 
                 return data;
             }
@@ -120,7 +132,7 @@ public class MainActivity extends AppCompatActivity {
             rv.setVisibility(View.VISIBLE);
 
 
-            mpopularList=utils.parseJSON(s);
+            mpopularList=NetworkUtils.parseJSON(s);
             Log.d(MainActivity.class.getSimpleName(),""+mpopularList.size());
             myadapter= new MoviesAdapter(mpopularList,MainActivity.this);
             rv.setAdapter(myadapter);

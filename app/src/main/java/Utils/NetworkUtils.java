@@ -21,18 +21,23 @@ import java.util.Scanner;
 
 public  class NetworkUtils {
     public static final String TAG = NetworkUtils.class.getSimpleName();
-    private static String sortby = "sort_by";
-    private static String sortby_value = "popularity.desc";
-    private static String api_key = "api_key";
+    private static final String sortby = "sort_by";
+    private static final String top_rated="top_rated";
+    private static final String api_key = "api_key";
+    private   String sort_by_val=null;
     private static final String BASEURL = "api.themoviedb.org/3/discover/movie?";
     private static final String api_key_value = "51d850fe504b9b9ebd6df40d48d30cf4";
+    public NetworkUtils(String queryParam){
+        this.sort_by_val=queryParam;
 
-    public String  fetchData(String url) throws MalformedURLException {
-        URL movies_url = new URL(url);
+    }
+
+    public static String  fetchData(URL url) throws MalformedURLException {
+        //URL movies_url = new URL(url);
         HttpURLConnection connection;
 
         try {
-            connection = (HttpURLConnection) movies_url.openConnection();
+            connection = (HttpURLConnection) url.openConnection();
             InputStream inputSteam = connection.getInputStream();
             Scanner s = new Scanner(inputSteam);
             s.useDelimiter("//A");
@@ -49,7 +54,7 @@ public  class NetworkUtils {
         }
 
     }
-    public ArrayList<Movie> parseJSON(String json){
+    public static ArrayList<Movie> parseJSON(String json){
         JSONObject mainObject;
         try {
             mainObject= new JSONObject(json);
@@ -102,8 +107,8 @@ public  class NetworkUtils {
     }
 
 
-    URL makeURLFromString(String url_string) {
-        Uri uri = Uri.parse(url_string).buildUpon().appendQueryParameter(sortby, sortby_value).appendQueryParameter(api_key, api_key_value).build();
+    public URL makeURLFromString(String url_string) {
+        Uri uri = Uri.parse(url_string).buildUpon().appendQueryParameter(sortby, sort_by_val).appendQueryParameter(api_key, api_key_value).build();
         URL url = null;
         try {
             url = new URL(uri.toString());
