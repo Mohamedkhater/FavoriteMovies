@@ -10,6 +10,7 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.Menu;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -34,6 +35,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
         pbar=findViewById(R.id.progress_bar);
         rv=findViewById(R.id.movies_rv);
 
@@ -49,6 +51,14 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        menu=findViewById(R.layout.)
+
+        return true;
+    }
+
     class MovieTask extends AsyncTask<String,Void,String>{
         NetworkUtils utils= new NetworkUtils();
 
