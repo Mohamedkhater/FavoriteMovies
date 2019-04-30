@@ -27,11 +27,12 @@ public class MainActivity extends AppCompatActivity {
     RecyclerView rv;
     ProgressBar pbar;
     ArrayList<Movie> mpopularList;
-    String popularMovies="http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
+    //String popularMovies="http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
 
-    String topratedMovies="http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
-    String defaultquery=popularMovies;
+    //String topratedMovies="http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
+    //String defaultquery=popularMovies;
     private static final String popularity = "popularity.desc";
+    private static final String topRatedMovies="top_rated";
 
     public static final String API_KEY="api_key";
     public static final String base_url="http://api.themoviedb.org/3/discover/movie";
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     public boolean onOptionsItemSelected(MenuItem item) {
         MovieTask movieTask=new MovieTask();
         URL popularMoviesUrl=new NetworkUtils(popularity).makeURLFromString(base_url);
-        URL topRatedMoviesUrl= new NetworkUtils(topratedMovies).makeURLFromString(base_url);
+        URL topRatedMoviesUrl= new NetworkUtils(topRatedMovies).makeURLFromString(base_url);
 
         if(item.getItemId()==R.id.sort_by_popularity){
             movieTask.execute(popularMoviesUrl);
