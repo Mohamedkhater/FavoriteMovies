@@ -45,9 +45,8 @@ public  class NetworkUtils {
             return null;
 
         } catch (IOException e) {
-            e.printStackTrace();
+            return null;
         }
-        return null;
 
     }
     public ArrayList<Movie> parseJSON(String json){
@@ -67,6 +66,7 @@ public  class NetworkUtils {
 
                 movie.setAdult(movie_item.getBoolean("adult"));
                 movie.setVideo(movie_item.getBoolean("video"));
+                movie.setOverview(movie_item.getString("overview"));
 
 
                 movie.setOriginal_title(movie_item.getString("original_title"));

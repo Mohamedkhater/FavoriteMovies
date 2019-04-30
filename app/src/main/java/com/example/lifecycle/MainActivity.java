@@ -12,6 +12,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.widget.ProgressBar;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -21,6 +22,7 @@ import Utils.NetworkUtils;
 public class MainActivity extends AppCompatActivity {
     MoviesAdapter myadapter;
     RecyclerView rv;
+    ProgressBar pbar;
     ArrayList<Movie> mpopularList;
     String popularMovies="http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
 
@@ -32,6 +34,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pbar=findViewById(R.id.progress_bar);
         rv=findViewById(R.id.movies_rv);
 
         MovieTask movieTask=new MovieTask();
@@ -54,7 +57,13 @@ public class MainActivity extends AppCompatActivity {
         ArrayList<Movie> mtopratedList;
 
         @Override
+        protected void onPreExecute() {
+            pbar.setVisibility(View.VISIBLE);
+        }
+
+        @Override
         protected String doInBackground(String... urls) {
+
 
             mtopratedList= new ArrayList<>();
             String data;
@@ -74,6 +83,10 @@ public class MainActivity extends AppCompatActivity {
 
        // @Override
         protected void onPostExecute(String s) {
+            if (s==null || s==""){
+                return;
+            }
+            pbar.setVisibility(View.INVISIBLE);
 
 
             mpopularList=utils.parseJSON(s);

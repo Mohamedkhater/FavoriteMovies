@@ -1,11 +1,43 @@
 package com.example.lifecycle;
 
-public class Movie {
+import android.os.Parcel;
+import android.os.Parcelable;
+
+public class Movie implements Parcelable {
     private String id;
     private double vote_average;
     private boolean video;
     private String title;
     private String backdrop_path;
+    public Movie(){
+
+    }
+
+    public Movie(Parcel in) {
+        id = in.readString();
+        vote_average = in.readDouble();
+        video = in.readByte() != 0;
+        title = in.readString();
+        backdrop_path = in.readString();
+        popularity = in.readDouble();
+        poster_path = in.readString();
+        original_title = in.readString();
+        gender_ids = in.createIntArray();
+        adult = in.readByte() != 0;
+        overview = in.readString();
+    }
+
+    public static final Creator<Movie> CREATOR = new Creator<Movie>() {
+        @Override
+        public Movie createFromParcel(Parcel in) {
+            return new Movie(in);
+        }
+
+        @Override
+        public Movie[] newArray(int size) {
+            return new Movie[size];
+        }
+    };
 
     public String getBackdrop_path() {
         return backdrop_path;
@@ -103,4 +135,25 @@ public class Movie {
     private boolean adult;
     private String overview;
 
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(id);
+        dest.writeDouble(vote_average);
+        dest.writeByte((byte)(video?1:0));
+        dest.writeString(title);
+        dest.writeString(backdrop_path);
+        dest.writeDouble(popularity);
+        dest.writeString(poster_path);
+        dest.writeString(original_title);
+        dest.writeIntArray(gender_ids);
+
+        dest.writeByte((byte) (adult? 1:0));
+        dest.writeString(overview);
+
+    }
 }

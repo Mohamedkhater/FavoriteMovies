@@ -3,6 +3,7 @@ package com.example.lifecycle;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Parcel;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -21,6 +22,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
    // private int mNumber;
     TextView movieName;
     ArrayList<Movie>movies;
+    public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
+
+    private int index=0;
     Context context;
     public MoviesAdapter(ArrayList<Movie> movies, Context context){
         this.movies=movies;
@@ -56,10 +60,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         public static final String name="movie Name";
-        public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
         private Toast mToast;
         private String message;
         public Intent intent;
+
+
         private ImageView movieThumbnail;
 
 
@@ -71,21 +76,29 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         }
 
         public void bind(int i){
+
             movieName.setText(movies.get(i).getTitle());
             message=movieName.getText().toString(); 
            // mToast=Toast.makeText(itemView.getContext(),message,Toast.LENGTH_SHORT);
+            //String overview=movies.get(i).getOverview();
+
+
+
 
             Picasso.with(context).load(BASE_URL+movies.get(i).getPoster_path()).error(R.id.movie_image).into(movieThumbnail);
 
+
             movieThumbnail.setOnClickListener(this);
+            intent= new Intent(context,DetailActivity.class);
+
+            intent.putExtra(MoviesAdapter.MoviesViewHolder.name,movies.get(i));
 
 
         }
 
         @Override
         public void onClick(View v) {
-            intent= new Intent(v.getContext(),DetailActivity.class);
-            intent.putExtra(MoviesAdapter.MoviesViewHolder.name,message);
+
             v.getContext().startActivity(intent);
 
         }
