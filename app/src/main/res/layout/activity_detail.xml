@@ -27,6 +27,12 @@
         <RatingBar
             android:id="@+id/rating"
             android:layout_width="wrap_content"
+            android:outlineSpotShadowColor="#fff155"
+
+            android:outlineAmbientShadowColor="#33ff00"
+            android:clickable="false"
+            android:focusableInTouchMode="false"
+            android:focusable="false"
             android:layout_height="wrap_content" />
 
         <TextView

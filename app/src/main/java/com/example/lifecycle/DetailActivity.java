@@ -32,7 +32,7 @@ public class DetailActivity extends AppCompatActivity {
         Picasso.with(DetailActivity.this).load(MoviesAdapter.BASE_URL+movie.getPoster_path()).fit().into(movie_image);
         rating_rb=(RatingBar)findViewById(R.id.rating);
         rating_rb.setRating((float)(movie.getVote_average()%5));
-        rating_rb.setActivated(false);
+        rating_rb.setFocusable(false);
         String description=movie.getOverview();
         description_tv=findViewById(R.id.description);
         description_tv.setText(description);
