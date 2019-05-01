@@ -23,7 +23,7 @@ public class DetailActivity extends AppCompatActivity {
         moiveName_tv=(TextView)findViewById(R.id.movie_tv);
         movie_image=(ImageView)findViewById(R.id.movie_image);
         Intent intent=getIntent();
-        String action=intent.getStringExtra(MoviesAdapter.MoviesViewHolder.name);
+      //  String action=intent.getStringExtra(MoviesAdapter.MoviesViewHolder.name);
         Movie movie =intent.getParcelableExtra(MoviesAdapter.MoviesViewHolder.name);
         String title= movie.getTitle();
         String img=movie.getPoster_path();

@@ -19,8 +19,9 @@ import java.util.ArrayList;
 
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
-    TextView movieName;
     ArrayList<Movie>movies;
+    public ArrayList<Intent>intents;
+
     public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
 
     private int index=0;
@@ -40,14 +41,37 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     @NonNull
     @Override
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
+
         View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_layout,viewGroup,false);
         MoviesViewHolder viewHolder= new MoviesViewHolder(view);
+
+
+
         return viewHolder;
     }
 
     @Override
     public void onBindViewHolder(@NonNull MoviesViewHolder moviesViewHolder, int i) {
         moviesViewHolder.bind(i);
+        Movie bindMovie=movies.get(i);
+
+        moviesViewHolder.movieName.setText(bindMovie.getOriginal_title()+" "+i);
+
+
+
+
+
+        Picasso.with(context).load(BASE_URL+bindMovie.getPoster_path()).into(moviesViewHolder.movieThumbnail);
+
+
+     //   moviesViewHolder.movieThumbnail.setOnClickListener(this);
+
+       Intent intent= new Intent(context,DetailActivity.class);
+
+
+      /*  intent.putExtra(name,bindMovie);
+        intents.add(intent);*/
+
 
 
     }
@@ -57,11 +81,13 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         return movies.size();
     }
 
-    class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
+
+
+    class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         public static final String name="movie Name";
-        private Toast mToast;
-        private String message;
-        public Intent intent;
+        TextView movieName;
+        Intent inn;
+
 
 
         private ImageView movieThumbnail;
@@ -76,31 +102,17 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
         public void bind(int i){
 
-            movieName.setText(movies.get(i).getTitle());
-            message=movieName.getText().toString(); 
-
-
-
-
-
-            Picasso.with(context).load(BASE_URL+movies.get(i).getPoster_path()).into(movieThumbnail);
-
-
             movieThumbnail.setOnClickListener(this);
-            intent= new Intent(context,DetailActivity.class);
-
-            intent.putExtra(MoviesAdapter.MoviesViewHolder.name,movies.get(i));
-
+             inn= new Intent(context,DetailActivity.class);
+            inn.putExtra(name,movies.get(i));
 
         }
+
 
         @Override
         public void onClick(View v) {
 
-            v.getContext().startActivity(intent);
-
+            v.getContext().startActivity(inn);
         }
-
-
     }
 }

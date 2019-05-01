@@ -10,6 +10,7 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:layout_weight="4"
+        android:visibility="visible"
 
         tools:background="#229" />
 
@@ -20,7 +21,6 @@
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:layout_weight="1"
-        android:visibility="invisible"
         android:background="#ffffff"
         android:gravity="center"
         android:textColor="#111"
