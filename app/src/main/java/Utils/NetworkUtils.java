@@ -23,12 +23,14 @@ public  class NetworkUtils {
     public static final String TAG = NetworkUtils.class.getSimpleName();
     private static final String sortby = "sort_by";
     private static final String top_rated="top_rated";
+    private String path;
     private static final String api_key = "api_key";
     private   String sort_by_val=null;
     private static final String BASEURL = "api.themoviedb.org/3/discover/movie?";
     private static final String api_key_value = "51d850fe504b9b9ebd6df40d48d30cf4";
     public NetworkUtils(String queryParam){
         this.sort_by_val=queryParam;
+        this.path=queryParam;
 
     }
 
@@ -108,7 +110,7 @@ public  class NetworkUtils {
 
 
     public URL makeURLFromString(String url_string) {
-        Uri uri = Uri.parse(url_string).buildUpon().appendQueryParameter(sortby, sort_by_val).appendQueryParameter(api_key, api_key_value).build();
+        Uri uri = Uri.parse(url_string).buildUpon().appendPath(path).appendQueryParameter(api_key, api_key_value).build();
         URL url = null;
         try {
             url = new URL(uri.toString());
