@@ -20,11 +20,11 @@ import java.util.ArrayList;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
     ArrayList<Movie>movies;
-    public ArrayList<Intent>intents;
+
 
     public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
 
-    private int index=0;
+
     Context context;
     public MoviesAdapter(ArrayList<Movie> movies, Context context){
         this.movies=movies;
@@ -32,10 +32,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
     }
 
-   /* public void setmNumber(int i){
-        this.mNumber=i;
 
-    }*/
 
 
     @NonNull
@@ -55,7 +52,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         moviesViewHolder.bind(i);
         Movie bindMovie=movies.get(i);
 
-        moviesViewHolder.movieName.setText(bindMovie.getOriginal_title()+" "+i);
+        moviesViewHolder.movieName.setText(bindMovie.getTitle());
 
 
 
