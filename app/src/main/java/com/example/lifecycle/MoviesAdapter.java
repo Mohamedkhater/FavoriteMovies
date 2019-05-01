@@ -19,7 +19,6 @@ import java.util.ArrayList;
 
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
-   // private int mNumber;
     TextView movieName;
     ArrayList<Movie>movies;
     public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
@@ -79,8 +78,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
             movieName.setText(movies.get(i).getTitle());
             message=movieName.getText().toString(); 
-           // mToast=Toast.makeText(itemView.getContext(),message,Toast.LENGTH_SHORT);
-            //String overview=movies.get(i).getOverview();
+
 
 
 
@@ -103,15 +101,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
         }
 
-     /*   @Override
-        public void onClick(View v) {mToast.show();
 
-            Intent intent= new Intent(MainActivity,DetailActivity.class);
-            intent.putExtra(name,movieName.getText());
-
-
-
-
-        }*/
     }
 }

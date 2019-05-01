@@ -20,7 +20,6 @@ public class DetailActivity extends AppCompatActivity {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
-       // setTitle();
         moiveName_tv=(TextView)findViewById(R.id.movie_tv);
         movie_image=(ImageView)findViewById(R.id.movie_image);
         Intent intent=getIntent();
@@ -37,7 +36,6 @@ public class DetailActivity extends AppCompatActivity {
         description_tv=findViewById(R.id.description);
         description_tv.setText(description);
         double rating=movie.getVote_average();
-        //rating_rb=findViewById(R.id.rating);
 
 
 
