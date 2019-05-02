@@ -5,6 +5,7 @@
     android:orientation="vertical">
 
     <ImageView
+        android:contentDescription="@string/content_description"
         android:id="@+id/movie_image"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -15,17 +16,17 @@
         tools:background="#229" />
 
 
-    <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    <TextView
         android:id="@+id/movie_name"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_margin="8dp"
         android:layout_weight="1"
-        android:background="#ffffff"
+        android:background="#991"
         android:gravity="center"
         android:textColor="#111"
-        android:textSize="15dp"
+        android:textSize="15sp"
 
-        tools:background="#991" />
+         />
 </LinearLayout>
 

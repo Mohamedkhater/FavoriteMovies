@@ -23,42 +23,27 @@ import Utils.NetworkUtils;
 import butterknife.internal.Utils;
 
 public class MainActivity extends AppCompatActivity {
-    MoviesAdapter myadapter;
+
     RecyclerView rv;
-    ProgressBar pbar;
-    ArrayList<Movie> mpopularList;
-    //String popularMovies="http://api.themoviedb.org/3/discover/movie?sort_by=popularity.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
+    ProgressBar pBar;
+    ArrayList<Movie> mPopularList;
+    private static final String TOP_RATED_MOVIES="top_rated";
+    private static final String POPULARITY="popular";
 
-    //String topratedMovies="http://api.themoviedb.org/3/discover/movie?sort_by=vote_average.desc&api_key=51d850fe504b9b9ebd6df40d48d30cf4";
-    //String defaultquery=popularMovies;
-   // private static final String popularity = "popularity.desc";
-    private static final String topRatedMovies="top_rated";
-    private static final String popularity="popular";
-
-    public static final String API_KEY="api_key";
-    public static final String base_url="http://api.themoviedb.org/3/movie";
-    public static final String api_key_value="51d850fe504b9b9ebd6df40d48d30cf4";
-
-
-
-    //  public static final int movies_size=10;
+    public static final String BASE_URL="http://api.themoviedb.org/3/movie";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        pbar=findViewById(R.id.progress_bar);
+        pBar=findViewById(R.id.progress_bar);
         rv=findViewById(R.id.movies_rv);
         MovieTask movieTask= new MovieTask();
         //NetworkUtils utils= new NetworkUtils();
-        NetworkUtils utils= new NetworkUtils(popularity);
+        NetworkUtils utils= new NetworkUtils(POPULARITY);
 
-        URL url=utils.makeURLFromString(base_url);
+        URL url=utils.makeURLFromString(BASE_URL);
         movieTask.execute(url);
-
-
-
-       // myadapter.setmNumber(movies_size);
 
 
 
@@ -77,8 +62,8 @@ public class MainActivity extends AppCompatActivity {
      @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         MovieTask movieTask=new MovieTask();
-        URL popularMoviesUrl=new NetworkUtils(popularity).makeURLFromString(base_url);
-        URL topRatedMoviesUrl= new NetworkUtils(topRatedMovies).makeURLFromString(base_url);
+        URL popularMoviesUrl=new NetworkUtils(POPULARITY).makeURLFromString(BASE_URL);
+        URL topRatedMoviesUrl= new NetworkUtils(TOP_RATED_MOVIES).makeURLFromString(BASE_URL);
 
         if(item.getItemId()==R.id.sort_by_popularity){
             movieTask.execute(popularMoviesUrl);
@@ -95,11 +80,10 @@ public class MainActivity extends AppCompatActivity {
 
 
 
-        ArrayList<Movie> mtopratedList;
 
         @Override
         protected void onPreExecute() {
-            pbar.setVisibility(View.VISIBLE);
+            pBar.setVisibility(View.VISIBLE);
             rv.setVisibility(View.INVISIBLE);
 
         }
@@ -108,7 +92,6 @@ public class MainActivity extends AppCompatActivity {
         protected String doInBackground(URL...urls) {
 
 
-            mtopratedList= new ArrayList<>();
             String data;
             try{
 
@@ -127,29 +110,24 @@ public class MainActivity extends AppCompatActivity {
 
        // @Override
         protected void onPostExecute(String s) {
-            if (s==null || s==""){
+            if (s==null || s.equals("")){
                 return;
             }
-            pbar.setVisibility(View.INVISIBLE);
+            pBar.setVisibility(View.INVISIBLE);
             rv.setVisibility(View.VISIBLE);
 
 
-            mpopularList=NetworkUtils.parseJSON(s);
-            Log.d(MainActivity.class.getSimpleName(),""+mpopularList.size());
-            myadapter= new MoviesAdapter(mpopularList,MainActivity.this);
+            mPopularList=NetworkUtils.parseJSON(s);
+            Log.d(MainActivity.class.getSimpleName(),""+mPopularList.size());
+            MoviesAdapter myadapter;
+
+            myadapter= new MoviesAdapter(mPopularList,MainActivity.this);
             rv.setAdapter(myadapter);
 
             //LinearLayoutManager layoutManager= new LinearLayoutManager(this);
             GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this,2);
             rv.setLayoutManager(layoutManager);
 
-          /*  for (int i=0;i<mpopularList.size();i++){
-            }*/
-
-
-
-            // Log.d(MainActivity.class.getSimpleName(),"popularlist size = "+mpopularList.size());
-           // Log.d(MainActivity.class.getSimpleName(),s);
 
         }
     }

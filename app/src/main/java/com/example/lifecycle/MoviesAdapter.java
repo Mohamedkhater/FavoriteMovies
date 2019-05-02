@@ -19,13 +19,13 @@ import java.util.ArrayList;
 
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
-    ArrayList<Movie>movies;
+    private ArrayList<Movie>movies;
 
 
     public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
 
 
-    Context context;
+    private Context context;
     public MoviesAdapter(ArrayList<Movie> movies, Context context){
         this.movies=movies;
         this.context=context;
@@ -40,11 +40,10 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_layout,viewGroup,false);
-        MoviesViewHolder viewHolder= new MoviesViewHolder(view);
 
 
 
-        return viewHolder;
+        return new MoviesViewHolder(view);
     }
 
     @Override
@@ -66,8 +65,6 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
        Intent intent= new Intent(context,DetailActivity.class);
 
 
-      /*  intent.putExtra(name,bindMovie);
-        intents.add(intent);*/
 
 
 
@@ -81,7 +78,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
 
 
     class MoviesViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
-        public static final String name="movie Name";
+        public  static final String NAME="movie Name";
         TextView movieName;
         Intent inn;
 
@@ -90,18 +87,19 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         private ImageView movieThumbnail;
 
 
-        public MoviesViewHolder(@NonNull View itemView) {
+
+        private MoviesViewHolder(@NonNull View itemView) {
             super(itemView);
             movieName=itemView.findViewById(R.id.movie_name);
             movieThumbnail=itemView.findViewById(R.id.movie_image);
 
         }
 
-        public void bind(int i){
+        private void bind(int i){
 
             movieThumbnail.setOnClickListener(this);
              inn= new Intent(context,DetailActivity.class);
-            inn.putExtra(name,movies.get(i));
+            inn.putExtra(NAME,movies.get(i));
 
         }
 

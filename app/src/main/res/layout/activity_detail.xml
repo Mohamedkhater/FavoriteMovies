@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         android:orientation="vertical">
 
         <TextView
@@ -15,7 +16,7 @@
             android:layout_height="80dp"
             android:background="#ff00ff"
             android:gravity="center"
-            android:textSize="30dp" />
+            android:textSize="30sp" />
 
         <ImageView
 
@@ -23,17 +24,39 @@
             android:layout_width="match_parent"
 
             android:layout_height="396dp" />
-
-        <RatingBar
-            android:id="@+id/rating"
-            android:layout_width="wrap_content"
-            android:outlineSpotShadowColor="#fff155"
-
-            android:outlineAmbientShadowColor="#33ff00"
-            android:clickable="false"
-            android:focusableInTouchMode="false"
-            android:focusable="false"
+        <TextView
+            android:id="@+id/release_date"
+            android:textSize="30sp"
+            android:textColor="@color/colorPrimaryDark"
+            android:layout_width="match_parent"
+            android:text="@string/release_date"
             android:layout_height="wrap_content" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RatingBar
+                android:id="@+id/rating"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:isIndicator="true"
+                android:layout_weight="3"
+                android:clickable="false"
+                android:focusable="false"
+                android:focusableInTouchMode="false"
+                android:numStars="5"
+                 />
+            <TextView
+                android:id="@+id/rate_value"
+                android:layout_width="wrap_content"
+                android:textSize="20sp"
+                android:textColor="@color/colorPrimaryDark"
+                android:layout_height="wrap_content" />
+
+        </LinearLayout>
+
+
 
         <TextView
             android:id="@+id/description"

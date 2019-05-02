@@ -21,12 +21,12 @@ import java.util.Scanner;
 
 public  class NetworkUtils {
     public static final String TAG = NetworkUtils.class.getSimpleName();
-    private static final String sortby = "sort_by";
-    private static final String top_rated="top_rated";
+    private static final String SORT_BY = "sort_by";
+    private static final String TOP_RATED="top_rated";
     private String path;
-    private static final String api_key = "api_key";
+    private static final String API_KEY = "api_key";
     private static final String BASEURL = "api.themoviedb.org/3/discover/movie?";
-    private static final String api_key_value = "51d850fe504b9b9ebd6df40d48d30cf4";
+    private static final String API_KEY_VALUE = "51d850fe504b9b9ebd6df40d48d30cf4";
     public NetworkUtils(String queryParam){
         this.path=queryParam;
 
@@ -69,7 +69,7 @@ public  class NetworkUtils {
                 movie.setId(movie_item.getString("id"));
 
                 movie.setAdult(movie_item.getBoolean("adult"));
-                movie.setVideo(movie_item.getBoolean("video"));
+             //   movie.setVideo(movie_item.getBoolean("video"));
                 movie.setOverview(movie_item.getString("overview"));
 
 
@@ -77,6 +77,7 @@ public  class NetworkUtils {
 
                 movie.setVote_average(movie_item.getDouble("vote_average"));
                 movie.setPopularity(movie_item.getDouble("popularity"));
+                movie.setRelease_date(movie_item.getString("release_date"));
                 //Log.d(NetworkUtils.class.getSimpleName(),""+movie.getPopularity());
 
                 movie.setTitle(movie_item.getString("title"));
@@ -107,7 +108,7 @@ public  class NetworkUtils {
 
 
     public URL makeURLFromString(String url_string) {
-        Uri uri = Uri.parse(url_string).buildUpon().appendPath(path).appendQueryParameter(api_key, api_key_value).build();
+        Uri uri = Uri.parse(url_string).buildUpon().appendPath(path).appendQueryParameter(API_KEY, API_KEY_VALUE).build();
         URL url = null;
         try {
             url = new URL(uri.toString());

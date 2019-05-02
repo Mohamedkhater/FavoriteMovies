@@ -5,9 +5,9 @@ import android.os.Parcelable;
 
 public class Movie implements Parcelable {
     private String id;
-    private double vote_average;
-    private boolean video;
+    private double mvoteAverage;
     private String title;
+    private String mReleaseDate;
     private String backdrop_path;
     public Movie(){
 
@@ -15,14 +15,14 @@ public class Movie implements Parcelable {
 
     public Movie(Parcel in) {
         id = in.readString();
-        vote_average = in.readDouble();
-        video = in.readByte() != 0;
+        mvoteAverage = in.readDouble();
         title = in.readString();
         backdrop_path = in.readString();
         popularity = in.readDouble();
         poster_path = in.readString();
         original_title = in.readString();
         gender_ids = in.createIntArray();
+        mReleaseDate=in.readString();
         adult = in.readByte() != 0;
         overview = in.readString();
     }
@@ -57,20 +57,15 @@ public class Movie implements Parcelable {
     }
 
     public double getVote_average() {
-        return vote_average;
+        return mvoteAverage;
     }
 
     public void setVote_average(double vote_average) {
-        this.vote_average = vote_average;
+        this.mvoteAverage = vote_average;
     }
 
-    public boolean isVideo() {
-        return video;
-    }
 
-    public void setVideo(boolean video) {
-        this.video = video;
-    }
+
 
     public String getTitle() {
         return title;
@@ -143,17 +138,25 @@ public class Movie implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(id);
-        dest.writeDouble(vote_average);
-        dest.writeByte((byte)(video?1:0));
+        dest.writeDouble(mvoteAverage);
         dest.writeString(title);
         dest.writeString(backdrop_path);
         dest.writeDouble(popularity);
         dest.writeString(poster_path);
         dest.writeString(original_title);
         dest.writeIntArray(gender_ids);
+        dest.writeString(mReleaseDate);
 
         dest.writeByte((byte) (adult? 1:0));
         dest.writeString(overview);
 
+    }
+
+    public String getRelease_date() {
+        return mReleaseDate;
+    }
+
+    public void setRelease_date(String release_date) {
+        this.mReleaseDate = release_date;
     }
 }
