@@ -26,7 +26,7 @@ public  class NetworkUtils {
     private String path;
     public static final String API_KEY = "api_key";
     private static final String BASEURL = "api.themoviedb.org/3/discover/movie?";
-    public static final String API_KEY_VALUE = ""; //TODO(1) Please insert your key.
+    public static final String API_KEY_VALUE = "51d850fe504b9b9ebd6df40d48d30cf4"; //TODO(1) Please insert your key.
     public NetworkUtils(String queryParam){
         this.path=queryParam;
 

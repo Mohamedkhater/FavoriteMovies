@@ -3,4 +3,5 @@
     <string name="release_date">Release date: </string>
     <string name="content_description">movie image</string>
     <string name="watch_trailer">Watch Trailer!</string>
+    <string name="api_key">51d850fe504b9b9ebd6df40d48d30cf4</string>
 </resources>
