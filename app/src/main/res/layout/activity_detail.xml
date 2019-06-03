@@ -62,9 +62,30 @@
             android:id="@+id/description"
             android:layout_width="match_parent"
             android:layout_height="wrap_content" />
+        <ProgressBar
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:id="@+id/trailer_pb"
+            android:layout_gravity="center"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:text="@string/watch_trailer"
+            android:textSize="20sp"
+            android:textColor="@color/colorPrimaryDark"
+
+            android:id="@+id/trailer-tv"/>
+        <TextView
+            android:layout_width="match_parent"
+            android:id="@+id/reviews_tv"
+            android:layout_height="50dp"
+            android:text="View Reviews"
+            android:textSize="20sp"/>
+
 
 
     </LinearLayout>
+
 
 
 </ScrollView>

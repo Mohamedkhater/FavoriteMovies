@@ -1,18 +1,50 @@
 package com.example.lifecycle;
 
+import android.content.Context;
 import android.content.Intent;
+import android.net.Network;
+import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.RatingBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.squareup.picasso.Picasso;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.net.MalformedURLException;
+import java.net.URL;
+
+import Utils.NetworkUtils;
+
+import static Utils.NetworkUtils.fetchData;
 import static java.lang.Math.round;
 
 public class DetailActivity extends AppCompatActivity {
+    private String videoURL="http://api.themoviedb.org/3/movie/";
+    TextView trailer_tv;
+    TextView reviews_tv;
+    ProgressBar bb;
+    private String response;
+    public static  void setRestpose(String response){
+        response=response;
+    }
+    public Movie movie;
+
+
+
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -22,34 +54,305 @@ public class DetailActivity extends AppCompatActivity {
         TextView description_tv;
         TextView releaseDate_tv;
         TextView rate;
+        bb=findViewById(R.id.trailer_pb);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         moiveName_tv=findViewById(R.id.movie_tv);
         releaseDate_tv=findViewById(R.id.release_date);
+        movie_image=findViewById(R.id.movie_detail_image);
+        rating_rb=findViewById(R.id.rating);
+        rate=findViewById(R.id.rate_value);
+        description_tv=findViewById(R.id.description);
+        reviews_tv=findViewById(R.id.reviews_tv);
+        trailer_tv= findViewById(R.id.trailer_tv);
+        bb=findViewById(R.id.trailer_pb);
+
+
+
+
+
+
+
         Intent intent=getIntent();
       //  String action=intent.getStringExtra(MoviesAdapter.MoviesViewHolder.name);
-        Movie movie =intent.getParcelableExtra(MoviesAdapter.MoviesViewHolder.NAME);
-        String title= movie.getTitle();
-        movie_image=findViewById(R.id.movie_detail_image);
-        Picasso.with(DetailActivity.this).load(MoviesAdapter.BASE_URL+movie.getPoster_path()).fit().into(movie_image);
-        rating_rb=findViewById(R.id.rating);
-        rating_rb.setRating((float)(movie.getVote_average()%5));
-        String rateVal=String.valueOf(round(movie.getVote_average()));
-        Log.d(DetailActivity.class.getSimpleName(),rateVal);
-       rate=findViewById(R.id.rate_value);
+        if (intent.hasExtra(MoviesAdapter.MoviesViewHolder.NAME)){
+            movie =intent.getParcelableExtra(MoviesAdapter.MoviesViewHolder.NAME);
+            String title= movie.getTitle();
+            Picasso.with(DetailActivity.this).load(MoviesAdapter.BASE_URL+movie.getPoster_path()).fit().into(movie_image);
+            Log.w(DetailActivity.class.getSimpleName(),String.valueOf(movie.getVote_average()));
+            rating_rb.setRating((float)(movie.getVote_average()%5));
+            String rateVal=String.valueOf(round(movie.getVote_average()));
+            //Log.d(DetailActivity.class.getSimpleName(),rateVal);
 
-        rate.setText("Vote Average: "+rateVal);
-        rating_rb.setFocusable(false);
-        String releaseDate=movie.getRelease_date();
-        releaseDate_tv.append(releaseDate);
-        String description=movie.getOverview();
-        description_tv=findViewById(R.id.description);
-        description_tv.setText(description);
+            rate.setText("Vote Average: "+rateVal);
+            rating_rb.setFocusable(false);
+            String releaseDate=movie.getRelease_date();
+            releaseDate_tv.append(releaseDate);
+            String description=movie.getOverview();
+            description_tv.setText(description);
+            moiveName_tv.setText(title);
+
+            String videoUrl = videoURL + movie.getId() + "/videos";
+            String reviewsUrl=videoURL+movie.getId()+"/reviews";
+            Log.w(DetailActivity.class.getSimpleName(),reviewsUrl);
+             Uri uri = Uri.parse(videoUrl).buildUpon().appendQueryParameter(NetworkUtils.API_KEY, NetworkUtils.API_KEY_VALUE).build();
+            final Uri uriReviews=Uri.parse(reviewsUrl).buildUpon().appendQueryParameter(NetworkUtils.API_KEY,NetworkUtils.API_KEY_VALUE).build();
+            URL url= null;
+            URL urlReviews=null;
+            try {
+                url = new URL(uri.toString());
+                urlReviews=new URL(uriReviews.toString());
+                Log.d(DetailActivity.class.getSimpleName(),uriReviews.toString());
+                //Log.d(DetailActivity.class.getSimpleName(),url.toString());
+                //DetailTask detailTask= new DetailTask(false);
+                // detailTask.execute(url);
+                AsyncTaskListener myListener= new AsyncTaskListener<String>() {        // listener for a click event on the trailer TextView
+                    @Override
+                    public void onComplete(String results) {
+                        JSONObject obj = null;
+
+                        try {
+                            obj = new JSONObject(results);
+                            JSONArray jsonArray = obj.getJSONArray("results");
+
+
+                            String firstVideoPath = jsonArray.getJSONObject(0).getString("key");
+                            final Uri movie_uri = Uri.parse("https://www.youtube.com").buildUpon().appendPath("watch").appendQueryParameter("v", firstVideoPath).build();
+                            //  Log.d(DetailActivity.class.getSimpleName(),movie_uri.toString());
+                            trailer_tv.setVisibility(View.VISIBLE);
+                            bb.setVisibility(View.INVISIBLE);
+                            trailer_tv.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent intent = new Intent (Intent.ACTION_VIEW);
+                                    intent.setData(movie_uri);
+                                    v.getContext().startActivity(intent);
+                                }
+                            });
+
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
+
+                    }
+
+
+
+                    @Override
+                    public void launchTask(URL url) {
+                        MovieTask movieTask= new MovieTask(this);
+                        movieTask.execute(url);
+
+                    }
+                };
+                myListener.launchTask(url);
+                AsyncTaskListener reviewsListener= new AsyncTaskListener<String>() {
+                    @Override
+                    public void onComplete(String results) {
+                        final Intent intent1 = new Intent(DetailActivity.this,ReviewsActivity.class);
+                        intent1.putExtra(ReviewsActivity.REVIEWS_TEXT,results);
+                        reviews_tv.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                v.getContext().startActivity(intent1);
+                            }
+                        });
+                 /*  try {
+                      // JSONObject obj= new JSONObject(results);
+                      // JSONArray array = null;
+
+                      // array = obj.getJSONArray("results");
+                    //   Log.d(DetailActivity.class.getSimpleName(),array.toString());
+                       for (int i = 0; i < array.length(); i++) {
+                           JSONObject user = array.getJSONObject(i);
+                           String userName = user.getString("author");
+                           reviews_tv.append(userName + "\n");
+
+                           String userRevies = user.getString("content");
+                           reviews_tv.append(userRevies + "\n");
+                       }
+                   } catch (JSONException e) {
+                       e.printStackTrace();
+                   }*/
 
 
 
 
-        moiveName_tv.setText(title);
+                    }
+
+                    @Override
+                    public void launchTask(URL url) {
+                        MovieTask retrieveReviewsTask= new MovieTask(this);
+                        retrieveReviewsTask.execute(url);
+
+                    }
+                };
+                reviewsListener.launchTask(urlReviews);
+
+        /*    DetailTask detailTask1= new DetailTask(true);
+            detailTask1.execute(urlReviews);*/
+
+            } catch (MalformedURLException e) {
+                e.printStackTrace();
+            }
+
+        }
+
+
+
+
+      //  final Intent ReviewsActivityIntent= new Intent(this,ReviewsActivity.class);
+
+
+
+
+
+
+
+
+
+
 
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.favorite,menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int itemId=item.getItemId();
+        switch (itemId){
+            case R.id.favorite_btn:
+                String movieName=movie.getTitle();
+                String movieId=movie.getId();
+                String description=movie.getOverview();
+                String imagePath=movie.getPoster_path();
+                String releaseDate=movie.getRelease_date();
+                double voteAverage=movie.getVote_average();
+                final MovieEntry movieEntry= new MovieEntry(movieId,movieName,description,imagePath,voteAverage,releaseDate);
+
+
+                AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                    @Override
+                    public void run() {
+
+                        Database mDb=Database.getInstance(getApplicationContext());
+                        mDb.movieTaskDao().insertMovie(movieEntry);
+
+
+                    }
+                });
+
+
+
+
+
+                Toast.makeText(DetailActivity.this,"Added successfully!",Toast.LENGTH_SHORT).show();
+
+        }
+        return true;
+    }
+    /* class DetailTask extends AsyncTask<URL,Void,String> {
+        private boolean x;
+        public DetailTask(boolean y){
+            this.x=y;
+
+        }
+
+
+
+
+
+        @Override
+        protected String doInBackground(URL... urls) {
+            trailer_tv.setVisibility(View.INVISIBLE);
+            bb.setVisibility(View.VISIBLE);
+
+
+
+
+            URL url=null;
+
+            {
+                try {
+                    url =urls[0];
+                    Log.d(DetailActivity.class.getSimpleName(),url.toString());
+
+                    String jsonResponse = NetworkUtils.fetchData(url);
+                    if (!x){
+                        JSONObject obj = null;
+                        try {
+                            obj = new JSONObject(jsonResponse);
+                            JSONArray jsonArray = obj.getJSONArray("results");
+
+                            String firstVideoPath = jsonArray.getJSONObject(0).getString("key");
+                            return firstVideoPath;
+
+
+
+
+
+
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+
+                    }
+                    else {
+                        return jsonResponse;
+                    }
+
+
+
+
+                } catch (MalformedURLException e) {
+                    e.printStackTrace();
+                }
+            }
+            return null;
+
+        }
+
+        @Override
+        protected void onPostExecute(String s) {
+            if (!x){
+
+
+
+            }
+            else{
+                try {
+                    JSONObject obj2=new JSONObject(s);
+                    JSONArray array= new JSONArray("results");
+                    for (int i=0;i<array.length();i++){
+                        JSONObject user=array.getJSONObject(i);
+                        String userName=user.getString("author");
+                        reviews_tv.append(userName+"\n");
+
+                        String userRevies=user.getString("content");
+                        reviews_tv.append(userRevies+"\n");
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+            }
+
+
+
+
+        }
+
+
+
+
+
+
+    }*/
 }

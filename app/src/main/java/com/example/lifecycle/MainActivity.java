@@ -1,18 +1,18 @@
 package com.example.lifecycle;
 
 import android.content.Intent;
-import android.nfc.Tag;
-import android.os.AsyncTask;
+import android.os.Parcelable;
 import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.AsyncTaskLoader;
+import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.GridLayoutManager;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.widget.ProgressBar;
 
@@ -20,30 +20,87 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import Utils.NetworkUtils;
-import butterknife.internal.Utils;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity  {
+    private static String TAG=MainActivity.class.getSimpleName();
 
     RecyclerView rv;
     ProgressBar pBar;
+
     ArrayList<Movie> mPopularList;
     private static final String TOP_RATED_MOVIES="top_rated";
     private static final String POPULARITY="popular";
-
+    public static final String SAVED_MOVIES_TEXT="savedmovies";
+    private Parcelable recyclerviewLayoutParcel;
     public static final String BASE_URL="http://api.themoviedb.org/3/movie";
+    AsyncTaskListener<String> listener;
+    MoviesAdapter myadapter;
+   private GridLayoutManager layoutManager;
+
+    @Override
+    public void onSaveInstanceState(Bundle outState ) {
+        super.onSaveInstanceState(outState);
+      //   list=myadapter.getMovies();
+         recyclerviewLayoutParcel =layoutManager.onSaveInstanceState();
+        outState.putParcelable(SAVED_MOVIES_TEXT, recyclerviewLayoutParcel);
+
+
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        if (savedInstanceState!=null){
+             recyclerviewLayoutParcel =savedInstanceState.getParcelable(SAVED_MOVIES_TEXT);
+
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(recyclerviewLayoutParcel !=null){
+
+            layoutManager.onRestoreInstanceState(recyclerviewLayoutParcel);
+
+        }
+        rv.setLayoutManager(layoutManager);// for some reason it doesn't work when disconnecting the wifi ,what should i do?
+
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+
         pBar=findViewById(R.id.progress_bar);
         rv=findViewById(R.id.movies_rv);
-        MovieTask movieTask= new MovieTask();
-        //NetworkUtils utils= new NetworkUtils();
+
         NetworkUtils utils= new NetworkUtils(POPULARITY);
 
-        URL url=utils.makeURLFromString(BASE_URL);
-        movieTask.execute(url);
+        URL moviesUrl=utils.makeURLFromString(BASE_URL);
+
+        layoutManager= new GridLayoutManager(MainActivity.this,2);
+
+        listener = new AsyncTaskListener<String>() {
+          @Override
+          public void onComplete(String results) {
+              setMoviesInViews(results);
+
+
+          }
+
+          @Override
+          public void launchTask(URL url) {
+              MovieTask movieTask= new MovieTask(new ProgressBar(getApplicationContext()),rv,this);
+              movieTask.execute(url);
+
+          }
+      };
+      listener.launchTask(moviesUrl);
+
 
 
 
@@ -61,74 +118,47 @@ public class MainActivity extends AppCompatActivity {
     }
      @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        MovieTask movieTask=new MovieTask();
-        URL popularMoviesUrl=new NetworkUtils(POPULARITY).makeURLFromString(BASE_URL);
-        URL topRatedMoviesUrl= new NetworkUtils(TOP_RATED_MOVIES).makeURLFromString(BASE_URL);
+         URL popularMoviesUrl=new NetworkUtils(POPULARITY).makeURLFromString(BASE_URL);
+         URL topRatedMoviesUrl= new NetworkUtils(TOP_RATED_MOVIES).makeURLFromString(BASE_URL);
+
+
+        //MovieTask movieTask=new MovieTask();
 
         if(item.getItemId()==R.id.sort_by_popularity){
-            movieTask.execute(popularMoviesUrl);
+            listener.launchTask(popularMoviesUrl);
+
 
         }
         else if(item.getItemId()==R.id.sort_by_rating){
-            movieTask.execute(topRatedMoviesUrl);
+           // movieTask.execute(topRatedMoviesUrl);
+            listener.launchTask(topRatedMoviesUrl);
+        }
+        else if(item.getItemId()==R.id.favorite_list_btn){
+            Intent intent= new Intent(this, FavoritesActivity.class);
+            startActivity(intent);
         }
         return true;
     }
 
-    class MovieTask extends AsyncTask<URL,Void,String>{
-        //NetworkUtils utils= new NetworkUtils();
 
 
+    public  void setMoviesInViews(String s){
+        pBar.setVisibility(View.INVISIBLE);
+        rv.setVisibility(View.VISIBLE);
+        //Log.d(TAG, s);
+        mPopularList=NetworkUtils.parseJSON(s);
+      //  Log.d(MainActivity.class.getSimpleName(),""+mPopularList.size());
+
+        myadapter= new MoviesAdapter(mPopularList,MainActivity.this);
+        rv.setAdapter(myadapter);
 
 
-        @Override
-        protected void onPreExecute() {
-            pBar.setVisibility(View.VISIBLE);
-            rv.setVisibility(View.INVISIBLE);
-
-        }
-
-        @Override
-        protected String doInBackground(URL...urls) {
+        //LinearLayoutManager layoutManager= new LinearLayoutManager(this);
 
 
-            String data;
-            try{
-
-                data= NetworkUtils.fetchData(urls[0]);
-
-                return data;
-            }
-            catch (Exception e){
-                Log.d(MainActivity.class.getSimpleName(),"can't return JSON format");
-                e.printStackTrace();
-            }
-
-
-            return null;
-        }
-
-       // @Override
-        protected void onPostExecute(String s) {
-            if (s==null || s.equals("")){
-                return;
-            }
-            pBar.setVisibility(View.INVISIBLE);
-            rv.setVisibility(View.VISIBLE);
-
-
-            mPopularList=NetworkUtils.parseJSON(s);
-            Log.d(MainActivity.class.getSimpleName(),""+mPopularList.size());
-            MoviesAdapter myadapter;
-
-            myadapter= new MoviesAdapter(mPopularList,MainActivity.this);
-            rv.setAdapter(myadapter);
-
-            //LinearLayoutManager layoutManager= new LinearLayoutManager(this);
-            GridLayoutManager layoutManager = new GridLayoutManager(MainActivity.this,2);
-            rv.setLayoutManager(layoutManager);
-
-
-        }
     }
+
+
+
+
 }

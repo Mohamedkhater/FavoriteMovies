@@ -19,6 +19,13 @@ import java.util.ArrayList;
 
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder> {
+
+
+   /* public void setMovies(ArrayList<Movie> movies) {
+        this.movies = movies;
+        notifyDataSetChanged();
+    }*/
+
     private ArrayList<Movie>movies;
 
 
@@ -30,6 +37,9 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         this.movies=movies;
         this.context=context;
 
+    }
+    public ArrayList<Movie> getMovies() {
+        return movies;
     }
 
 

@@ -2,6 +2,9 @@ package com.example.lifecycle;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.text.method.MovementMethod;
+
+import java.util.ArrayList;
 
 public class Movie implements Parcelable {
     private String id;
@@ -9,6 +12,7 @@ public class Movie implements Parcelable {
     private String title;
     private String mReleaseDate;
     private String backdrop_path;
+    private ArrayList<Movie> movies;
     public Movie(){
 
     }
@@ -25,6 +29,7 @@ public class Movie implements Parcelable {
         mReleaseDate=in.readString();
         adult = in.readByte() != 0;
         overview = in.readString();
+      //  in.readTypedList(movies,Movie.CREATOR);
     }
 
     public static final Creator<Movie> CREATOR = new Creator<Movie>() {
@@ -149,6 +154,7 @@ public class Movie implements Parcelable {
 
         dest.writeByte((byte) (adult? 1:0));
         dest.writeString(overview);
+      //  dest.writeTypedList(movies);
 
     }
 

@@ -24,9 +24,9 @@ public  class NetworkUtils {
     private static final String SORT_BY = "sort_by";
     private static final String TOP_RATED="top_rated";
     private String path;
-    private static final String API_KEY = "api_key";
+    public static final String API_KEY = "api_key";
     private static final String BASEURL = "api.themoviedb.org/3/discover/movie?";
-    private static final String API_KEY_VALUE = "51d850fe504b9b9ebd6df40d48d30cf4";
+    public static final String API_KEY_VALUE = ""; //TODO(1) Please insert your key.
     public NetworkUtils(String queryParam){
         this.path=queryParam;
 

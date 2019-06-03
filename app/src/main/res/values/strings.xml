@@ -1,5 +1,6 @@
 <resources>
-    <string name="app_name">Favorite Movies</string>
+    <string name="app_name">Movie App</string>
     <string name="release_date">Release date: </string>
     <string name="content_description">movie image</string>
+    <string name="watch_trailer">Watch Trailer!</string>
 </resources>

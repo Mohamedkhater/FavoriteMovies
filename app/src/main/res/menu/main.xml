@@ -9,5 +9,10 @@
         app:showAsAction="never"
         android:id="@+id/sort_by_rating"
         android:orderInCategory="2"></item>
+    <item
+        android:orderInCategory="0"
+        android:title="Favorites"
+        android:id="@+id/favorite_list_btn"
+        app:showAsAction="ifRoom"></item>
 
 </menu>
