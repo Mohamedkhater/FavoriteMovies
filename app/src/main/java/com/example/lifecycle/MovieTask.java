@@ -5,6 +5,7 @@ import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.net.URL;
 
@@ -66,7 +67,7 @@ class MovieTask extends AsyncTask<URL,Void,String> {
         // @Override
         protected void onPostExecute(String s) {
             if (s==null || s.equals("")){
-                return;
+                taskListener.onComplete(s);
             }
 
             taskListener.onComplete(s);

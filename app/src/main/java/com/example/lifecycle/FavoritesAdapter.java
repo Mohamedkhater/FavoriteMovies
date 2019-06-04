@@ -1,5 +1,6 @@
 package com.example.lifecycle;
 
+import android.content.Context;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +15,11 @@ import java.util.List;
 
 public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.FavoritesViewHolder> {
     private List<MovieEntry> mMoviesEntries;
+    public Context context;
+    public FavoritesAdapter(Context context,List<MovieEntry> entries){
+        this.context=context;
+        this.mMoviesEntries=entries;
+    }
 
     public void setTasks(List<MovieEntry> names) {
         this.mMoviesEntries = names;
@@ -51,7 +57,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Toast.makeText(v.getContext(),"launching detailActivity",Toast.LENGTH_SHORT).show();
+                    Toast.makeText(context,"launching detailActivity",Toast.LENGTH_SHORT).show();
                    int viewholderPosition= viewHolder.getAdapterPosition();
                    MovieEntry entry=mMoviesEntries.get(viewholderPosition);
                    Movie movie = new Movie();
@@ -61,7 +67,7 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
                    movie.setOverview(entry.getDescription());
                    movie.setVote_average(entry.getVoteAverage());
                    movie.setRelease_date(entry.getReleaseDate());
-                    Intent intent = new Intent(v.getContext(),DetailActivity.class);
+                    Intent intent = new Intent(context,DetailActivity.class);
                     intent.putExtra(MoviesAdapter.MoviesViewHolder.NAME,movie);
                     v.getContext().startActivity(intent);
 

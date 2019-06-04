@@ -35,6 +35,7 @@ import static java.lang.Math.round;
 public class DetailActivity extends AppCompatActivity {
     private String videoURL="http://api.themoviedb.org/3/movie/";
     TextView trailer_tv;
+    private static final  String message="PLEASE CONNECT TO A NETWORK AND TRY AGAIN!";
     TextView reviews_tv;
     ProgressBar bb;
     private String response;
@@ -78,7 +79,7 @@ public class DetailActivity extends AppCompatActivity {
         if (intent.hasExtra(MoviesAdapter.MoviesViewHolder.NAME)){
             movie =intent.getParcelableExtra(MoviesAdapter.MoviesViewHolder.NAME);
             String title= movie.getTitle();
-            Picasso.with(DetailActivity.this).load(MoviesAdapter.BASE_URL+movie.getPoster_path()).fit().into(movie_image);
+            Picasso.with(DetailActivity.this).load(MoviesAdapter.BASE_URL+movie.getPoster_path()).fit().error(R.drawable.movie_foreground).into(movie_image);
             Log.w(DetailActivity.class.getSimpleName(),String.valueOf(movie.getVote_average()));
             rating_rb.setRating((float)(movie.getVote_average()%5));
             String rateVal=String.valueOf(round(movie.getVote_average()));
@@ -109,10 +110,20 @@ public class DetailActivity extends AppCompatActivity {
                 AsyncTaskListener myListener= new AsyncTaskListener<String>() {        // listener for a click event on the trailer TextView
                     @Override
                     public void onComplete(String results) {
+                        if (results==null || results=="")
+                        {
+                            bb.setVisibility(View.INVISIBLE);
+                            reviews_tv.setVisibility(View.INVISIBLE);
+                            trailer_tv.setVisibility(View.INVISIBLE);
+                            Toast.makeText(DetailActivity.this,message,Toast.LENGTH_LONG).show();
+                            return;
+
+                        }
                         JSONObject obj = null;
 
                         try {
                             obj = new JSONObject(results);
+
                             JSONArray jsonArray = obj.getJSONArray("results");
 
 
@@ -132,6 +143,7 @@ public class DetailActivity extends AppCompatActivity {
 
                         } catch (JSONException e) {
                             e.printStackTrace();
+
                         }
 
 
@@ -257,102 +269,5 @@ public class DetailActivity extends AppCompatActivity {
         }
         return true;
     }
-    /* class DetailTask extends AsyncTask<URL,Void,String> {
-        private boolean x;
-        public DetailTask(boolean y){
-            this.x=y;
 
-        }
-
-
-
-
-
-        @Override
-        protected String doInBackground(URL... urls) {
-            trailer_tv.setVisibility(View.INVISIBLE);
-            bb.setVisibility(View.VISIBLE);
-
-
-
-
-            URL url=null;
-
-            {
-                try {
-                    url =urls[0];
-                    Log.d(DetailActivity.class.getSimpleName(),url.toString());
-
-                    String jsonResponse = NetworkUtils.fetchData(url);
-                    if (!x){
-                        JSONObject obj = null;
-                        try {
-                            obj = new JSONObject(jsonResponse);
-                            JSONArray jsonArray = obj.getJSONArray("results");
-
-                            String firstVideoPath = jsonArray.getJSONObject(0).getString("key");
-                            return firstVideoPath;
-
-
-
-
-
-
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-
-                    }
-                    else {
-                        return jsonResponse;
-                    }
-
-
-
-
-                } catch (MalformedURLException e) {
-                    e.printStackTrace();
-                }
-            }
-            return null;
-
-        }
-
-        @Override
-        protected void onPostExecute(String s) {
-            if (!x){
-
-
-
-            }
-            else{
-                try {
-                    JSONObject obj2=new JSONObject(s);
-                    JSONArray array= new JSONArray("results");
-                    for (int i=0;i<array.length();i++){
-                        JSONObject user=array.getJSONObject(i);
-                        String userName=user.getString("author");
-                        reviews_tv.append(userName+"\n");
-
-                        String userRevies=user.getString("content");
-                        reviews_tv.append(userRevies+"\n");
-                    }
-
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-
-            }
-
-
-
-
-        }
-
-
-
-
-
-
-    }*/
 }

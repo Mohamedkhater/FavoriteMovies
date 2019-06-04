@@ -4,4 +4,7 @@
     <string name="content_description">movie image</string>
     <string name="watch_trailer">Watch Trailer!</string>
     <string name="api_key">51d850fe504b9b9ebd6df40d48d30cf4</string>
+    <string name="favorites_text">Favorites</string>
+    <string name="sort_by_top_rated">sort by top rated</string>
+    <string name="sort_by_popularity">sort by popularity</string>
 </resources>

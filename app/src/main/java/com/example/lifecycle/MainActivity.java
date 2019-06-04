@@ -20,6 +20,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ProgressBar;
+import android.widget.Toast;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -39,21 +40,44 @@ public class MainActivity extends AppCompatActivity  {
     private static final String POPULARITY="popular";
     public static final String SAVED_MOVIES_TEXT="savedmovies";
     private Parcelable recyclerviewLayoutParcel;
+    private static final String ADAPTER="adapter";
+    private Parcelable recyclerviewAdapterParcer;
     public static final String BASE_URL="http://api.themoviedb.org/3/movie";
     AsyncTaskListener<String> listener;
     private Database mDb;
-
+    private Bundle bundle;
+    URL topRatedMoviesUrl;
+    public URL moviesUrl;
     private FavoritesAdapter favoritesAdapter;
-
+    private static final String RECYCLERVIEW_ID="recyclerviewId";
     MoviesAdapter myadapter;
    private GridLayoutManager layoutManager1;
+   private static final  String LIST_STATE="liststate";
+   private static final String FAVORITE_ITEMS="favoriteitems";
+   ArrayList<Movie>movies=new ArrayList<>();
+   ArrayList<MovieEntry>favoriteMovies=new ArrayList<>();
 
     @Override
     public void onSaveInstanceState(Bundle outState ) {
         super.onSaveInstanceState(outState);
-      //   list=myadapter.getMovies();
-         recyclerviewLayoutParcel =layoutManager1.onSaveInstanceState();
+        recyclerviewLayoutParcel =rv.getLayoutManager().onSaveInstanceState();
         outState.putParcelable(SAVED_MOVIES_TEXT, recyclerviewLayoutParcel);
+
+        //   list=myadapter.getMovies();
+        if (rv==findViewById(R.id.movies_rv)){
+            outState.putParcelableArrayList(LIST_STATE,movies);
+            outState.putInt(RECYCLERVIEW_ID,R.id.movies_rv);
+
+        }
+        else{
+            outState.putInt(RECYCLERVIEW_ID,R.id.favorites_rv);
+            outState.putParcelableArrayList(FAVORITE_ITEMS,favoriteMovies);
+        }
+
+
+
+        //outState.putParcelableArrayList(FAVORITE_ITEMS,favoriteMovies);
+
 
 
     }
@@ -62,22 +86,34 @@ public class MainActivity extends AppCompatActivity  {
     protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
         if (savedInstanceState!=null){
+
              recyclerviewLayoutParcel =savedInstanceState.getParcelable(SAVED_MOVIES_TEXT);
+             //movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
+
+
+
 
         }
     }
 
     @Override
+    protected void onStop() {
+        super.onStop();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+    @Override
     protected void onResume() {
         super.onResume();
-        if(recyclerviewLayoutParcel !=null){
 
-            layoutManager1.onRestoreInstanceState(recyclerviewLayoutParcel);
-
-        }
         if (rv==findViewById(R.id.favorites_rv)){
             rv.setAdapter(favoritesAdapter);
             rv.setLayoutManager(layoutManager);
+            setupViewModel();
         }
         else{
             rv.setAdapter(myadapter);
@@ -91,40 +127,74 @@ public class MainActivity extends AppCompatActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        pBar=findViewById(R.id.progress_bar);
+
+        topRatedMoviesUrl= new NetworkUtils(TOP_RATED_MOVIES).makeURLFromString(BASE_URL);
+
+        moviesUrl=new NetworkUtils(POPULARITY).makeURLFromString(BASE_URL);
+        layoutManager1= new GridLayoutManager(MainActivity.this,2);
+        layoutManager= new LinearLayoutManager(this);
+
 
         mDb= com.example.lifecycle.Database.getInstance(getApplicationContext());
-
-        pBar=findViewById(R.id.progress_bar);
-        rv=findViewById(R.id.movies_rv);
-
-        NetworkUtils utils= new NetworkUtils(POPULARITY);
-
-        URL moviesUrl=utils.makeURLFromString(BASE_URL);
-
-        layoutManager1= new GridLayoutManager(MainActivity.this,2);
-
         listener = new AsyncTaskListener<String>() {
-          @Override
-          public void onComplete(String results) {
-              setMoviesInViews(results);
+            @Override
+            public void onComplete(String results) {
+                if (results==null || results==""){
+                    Toast.makeText(MainActivity.this,"PLease insert your TMBD api key",Toast.LENGTH_LONG).show();
+                    Toast.makeText(MainActivity.this,"NO INTERNET CONNECTION, PLEASE TRY AGAIN LATER",Toast.LENGTH_LONG).show();
+
+                }
 
 
-          }
+                else
+                    setMoviesInViews(results);
 
-          @Override
-          public void launchTask(URL url) {
-              MovieTask movieTask= new MovieTask(new ProgressBar(getApplicationContext()),rv,this);
-              movieTask.execute(url);
+            }
 
-          }
-      };
-      listener.launchTask(moviesUrl);
+            @Override
+            public void launchTask(URL url) {
+                MovieTask movieTask= new MovieTask(new ProgressBar(getApplicationContext()),rv,this);
+                movieTask.execute(url);
 
-
-
-
+            }
+        };
 
 
+        if(savedInstanceState!=null){
+            int persistedRvId=savedInstanceState.getInt(RECYCLERVIEW_ID);
+
+            rv=findViewById(persistedRvId);
+
+            if(persistedRvId==R.id.movies_rv){
+                    movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
+                    myadapter= new MoviesAdapter(movies,this);
+                    rv.setLayoutManager(layoutManager1);
+
+                }
+                else{
+                    favoriteMovies=savedInstanceState.getParcelableArrayList(FAVORITE_ITEMS);
+                    favoritesAdapter=new FavoritesAdapter(this,favoriteMovies);
+                    rv.setLayoutManager(layoutManager);
+
+                }
+
+
+                recyclerviewLayoutParcel=savedInstanceState.getParcelable(SAVED_MOVIES_TEXT);
+                if(recyclerviewLayoutParcel!=null)
+                    rv.getLayoutManager().onRestoreInstanceState(recyclerviewLayoutParcel);
+
+
+
+
+        }
+        else{
+            rv=findViewById(R.id.movies_rv);
+            rv.setLayoutManager(layoutManager1);
+
+            listener.launchTask(moviesUrl);
+
+        }
 
 
     }
@@ -137,11 +207,7 @@ public class MainActivity extends AppCompatActivity  {
     }
      @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-         URL popularMoviesUrl=new NetworkUtils(POPULARITY).makeURLFromString(BASE_URL);
-         URL topRatedMoviesUrl= new NetworkUtils(TOP_RATED_MOVIES).makeURLFromString(BASE_URL);
 
-
-        //MovieTask movieTask=new MovieTask();
 
         if(item.getItemId()==R.id.sort_by_popularity){
 
@@ -152,27 +218,29 @@ public class MainActivity extends AppCompatActivity  {
 
                 rv.setLayoutManager(layoutManager1);
                 rv.setAdapter(myadapter);
+                rv.setVisibility(View.VISIBLE);
 
             }
 
-            listener.launchTask(popularMoviesUrl);
+            listener.launchTask(moviesUrl);
 
 
         }
         else if(item.getItemId()==R.id.sort_by_rating){
            // movieTask.execute(topRatedMoviesUrl);
             if (rv.getLayoutManager()!=layoutManager1){
+                rv.setVisibility(View.INVISIBLE);
                 rv=findViewById(R.id.movies_rv);
                 rv.setLayoutManager(layoutManager1);
                 rv.setAdapter(myadapter);
+                rv.setVisibility(View.VISIBLE);
 
             }
 
             listener.launchTask(topRatedMoviesUrl);
         }
         else if(item.getItemId()==R.id.favorite_list_btn){
-           /* Intent intent= new Intent(this, FavoritesActivity.class);
-            startActivity(intent);*/
+
            rv.setVisibility(View.INVISIBLE);
            setupViewModel();
         }
@@ -183,27 +251,32 @@ public class MainActivity extends AppCompatActivity  {
 
     public  void setMoviesInViews(String s){
         pBar.setVisibility(View.INVISIBLE);
-        rv.setVisibility(View.VISIBLE);
         //Log.d(TAG, s);
         mPopularList=NetworkUtils.parseJSON(s);
       //  Log.d(MainActivity.class.getSimpleName(),""+mPopularList.size());
+        if(mPopularList!=null)
+        {
+            movies.clear();
+            movies.addAll(mPopularList);
+        }
+
 
         myadapter= new MoviesAdapter(mPopularList,MainActivity.this);
         //rv.setLayoutManager(layoutManager1);
         rv.setAdapter(myadapter);
+        rv.setVisibility(View.VISIBLE);
 
 
 
-        //LinearLayoutManager layoutManager= new LinearLayoutManager(this);
+
 
 
     }
     public void setupViewModel( ){
         rv=findViewById(R.id.favorites_rv);
         rv.setVisibility(View.VISIBLE);
-        layoutManager= new LinearLayoutManager(this);
         rv.setLayoutManager(layoutManager);
-        favoritesAdapter=new FavoritesAdapter();
+        favoritesAdapter=new FavoritesAdapter(this,favoriteMovies);
 
 
         com.example.lifecycle.AppViewModel viewModel= ViewModelProviders.of(this).get(com.example.lifecycle.AppViewModel.class);
@@ -213,10 +286,15 @@ public class MainActivity extends AppCompatActivity  {
 
                 rv.setAdapter(favoritesAdapter);
 
-                Log.w(FavoritesActivity.class.getSimpleName(),"geting changes from LiveData!!!");
 
 
                 favoritesAdapter.setTasks(movieEntries);
+                favoriteMovies.clear();
+                if (movieEntries!=null){
+                    favoriteMovies.clear();
+                    favoriteMovies.addAll(movieEntries);
+
+                }
                 new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
                     @Override
                     public boolean onMove(@NonNull RecyclerView recyclerView, @NonNull RecyclerView.ViewHolder viewHolder, @NonNull RecyclerView.ViewHolder viewHolder1) {
@@ -234,6 +312,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
                                 mDb.movieTaskDao().deleteMovie(movies.get(position));
+                                favoriteMovies.remove(position);
 
 
                             }

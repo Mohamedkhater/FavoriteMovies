@@ -12,7 +12,7 @@ public class Movie implements Parcelable {
     private String title;
     private String mReleaseDate;
     private String backdrop_path;
-    private ArrayList<Movie> movies;
+
     public Movie(){
 
     }
