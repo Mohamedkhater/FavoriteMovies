@@ -57,6 +57,7 @@ public class MainActivity extends AppCompatActivity  {
    ArrayList<Movie>movies=new ArrayList<>();
    ArrayList<MovieEntry>favoriteMovies=new ArrayList<>();
 
+
     @Override
     public void onSaveInstanceState(Bundle outState ) {
         super.onSaveInstanceState(outState);
@@ -73,6 +74,7 @@ public class MainActivity extends AppCompatActivity  {
             outState.putInt(RECYCLERVIEW_ID,R.id.favorites_rv);
             outState.putParcelableArrayList(FAVORITE_ITEMS,favoriteMovies);
         }
+        bundle=outState;
 
 
 
@@ -116,6 +118,11 @@ public class MainActivity extends AppCompatActivity  {
             setupViewModel();
         }
         else{
+            if (bundle!=null){
+                movies=bundle.getParcelableArrayList(LIST_STATE);
+                myadapter=new MoviesAdapter(movies,this);
+
+            }
             rv.setAdapter(myadapter);
             rv.setLayoutManager(layoutManager1);
         }
@@ -278,13 +285,13 @@ public class MainActivity extends AppCompatActivity  {
         rv.setLayoutManager(layoutManager);
         favoritesAdapter=new FavoritesAdapter(this,favoriteMovies);
 
+        rv.setAdapter(favoritesAdapter);
 
         com.example.lifecycle.AppViewModel viewModel= ViewModelProviders.of(this).get(com.example.lifecycle.AppViewModel.class);
         viewModel.getMoviesEntries().observe(this, new Observer<List<MovieEntry>>() {
             @Override
             public void onChanged(@Nullable List<com.example.lifecycle.MovieEntry> movieEntries) {
 
-                rv.setAdapter(favoritesAdapter);
 
 
 

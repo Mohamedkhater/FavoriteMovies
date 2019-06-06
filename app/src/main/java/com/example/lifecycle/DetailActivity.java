@@ -254,7 +254,9 @@ public class DetailActivity extends AppCompatActivity {
                     public void run() {
 
                         Database mDb=Database.getInstance(getApplicationContext());
-                        mDb.movieTaskDao().insertMovie(movieEntry);
+
+
+                            mDb.movieTaskDao().insertMovie(movieEntry);
 
 
                     }
