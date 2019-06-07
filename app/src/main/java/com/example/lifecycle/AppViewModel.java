@@ -12,6 +12,8 @@ public class AppViewModel extends AndroidViewModel {
 
 
     private LiveData<List<MovieEntry>> moviesEntries;
+
+
     public AppViewModel(@NonNull Application application) {
         super(application);
         Database database=Database.getInstance(this.getApplication());

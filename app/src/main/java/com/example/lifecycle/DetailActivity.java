@@ -1,5 +1,9 @@
 package com.example.lifecycle;
 
+import android.arch.lifecycle.LifecycleOwner;
+import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Network;
@@ -7,6 +11,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
@@ -26,6 +31,7 @@ import org.json.JSONObject;
 
 import java.net.MalformedURLException;
 import java.net.URL;
+import java.util.List;
 
 import Utils.NetworkUtils;
 
@@ -43,6 +49,15 @@ public class DetailActivity extends AppCompatActivity {
         response=response;
     }
     public Movie movie;
+    Database mDb;
+    boolean isAvailable=false;
+    Context context=this;
+    public final LifecycleOwner owner=this;
+    MovieEntry data;
+
+
+
+
 
 
 
@@ -56,6 +71,7 @@ public class DetailActivity extends AppCompatActivity {
         TextView releaseDate_tv;
         TextView rate;
         bb=findViewById(R.id.trailer_pb);
+        mDb= Database.getInstance(getApplicationContext());
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_detail);
         moiveName_tv=findViewById(R.id.movie_tv);
@@ -67,12 +83,6 @@ public class DetailActivity extends AppCompatActivity {
         reviews_tv=findViewById(R.id.reviews_tv);
         trailer_tv= findViewById(R.id.trailer_tv);
         bb=findViewById(R.id.trailer_pb);
-
-
-
-
-
-
 
         Intent intent=getIntent();
       //  String action=intent.getStringExtra(MoviesAdapter.MoviesViewHolder.name);
@@ -146,10 +156,7 @@ public class DetailActivity extends AppCompatActivity {
 
                         }
 
-
-
                     }
-
 
 
                     @Override
@@ -171,26 +178,6 @@ public class DetailActivity extends AppCompatActivity {
                                 v.getContext().startActivity(intent1);
                             }
                         });
-                 /*  try {
-                      // JSONObject obj= new JSONObject(results);
-                      // JSONArray array = null;
-
-                      // array = obj.getJSONArray("results");
-                    //   Log.d(DetailActivity.class.getSimpleName(),array.toString());
-                       for (int i = 0; i < array.length(); i++) {
-                           JSONObject user = array.getJSONObject(i);
-                           String userName = user.getString("author");
-                           reviews_tv.append(userName + "\n");
-
-                           String userRevies = user.getString("content");
-                           reviews_tv.append(userRevies + "\n");
-                       }
-                   } catch (JSONException e) {
-                       e.printStackTrace();
-                   }*/
-
-
-
 
                     }
 
@@ -240,35 +227,45 @@ public class DetailActivity extends AppCompatActivity {
         int itemId=item.getItemId();
         switch (itemId){
             case R.id.favorite_btn:
-                String movieName=movie.getTitle();
-                String movieId=movie.getId();
-                String description=movie.getOverview();
-                String imagePath=movie.getPoster_path();
-                String releaseDate=movie.getRelease_date();
-                double voteAverage=movie.getVote_average();
-                final MovieEntry movieEntry= new MovieEntry(movieId,movieName,description,imagePath,voteAverage,releaseDate);
-
-
+                final String movieName=movie.getTitle();
+                final String movieId=movie.getId();
+                final String description=movie.getOverview();
+                final String imagePath=movie.getPoster_path();
+                final String releaseDate=movie.getRelease_date();
+                final double voteAverage=movie.getVote_average();
                 AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
                     @Override
                     public void run() {
-
-                        Database mDb=Database.getInstance(getApplicationContext());
-
-
-                            mDb.movieTaskDao().insertMovie(movieEntry);
-
-
+                        data=mDb.movieTaskDao().loadMovieById(movieId);
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                if (data==null){
+                                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mDb.movieTaskDao().insertMovie(new MovieEntry(movieId,movieName,description,imagePath,voteAverage,releaseDate));
+                                        }
+                                    });
+                                }
+                                else{
+                                    AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            mDb.movieTaskDao().deleteMovie(data);
+                                        }
+                                    });
+                                }
+                            }
+                        });
                     }
                 });
 
 
 
-
-
-                Toast.makeText(DetailActivity.this,"Added successfully!",Toast.LENGTH_SHORT).show();
-
         }
+
+
         return true;
     }
 

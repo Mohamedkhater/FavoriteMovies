@@ -36,6 +36,7 @@ public class MainActivity extends AppCompatActivity  {
     private LinearLayoutManager layoutManager;
 
     ArrayList<Movie> mPopularList;
+    public static com.example.lifecycle.AppViewModel viewModel;
     private static final String TOP_RATED_MOVIES="top_rated";
     private static final String POPULARITY="popular";
     public static final String SAVED_MOVIES_TEXT="savedmovies";
@@ -44,7 +45,7 @@ public class MainActivity extends AppCompatActivity  {
     private Parcelable recyclerviewAdapterParcer;
     public static final String BASE_URL="http://api.themoviedb.org/3/movie";
     AsyncTaskListener<String> listener;
-    private Database mDb;
+    public static Database mDb;
     private Bundle bundle;
     URL topRatedMoviesUrl;
     public URL moviesUrl;
@@ -118,11 +119,11 @@ public class MainActivity extends AppCompatActivity  {
             setupViewModel();
         }
         else{
-            if (bundle!=null){
+          /*  if (bundle!=null){
                 movies=bundle.getParcelableArrayList(LIST_STATE);
                 myadapter=new MoviesAdapter(movies,this);
 
-            }
+            }*/
             rv.setAdapter(myadapter);
             rv.setLayoutManager(layoutManager1);
         }
@@ -287,7 +288,7 @@ public class MainActivity extends AppCompatActivity  {
 
         rv.setAdapter(favoritesAdapter);
 
-        com.example.lifecycle.AppViewModel viewModel= ViewModelProviders.of(this).get(com.example.lifecycle.AppViewModel.class);
+        viewModel= ViewModelProviders.of(this).get(com.example.lifecycle.AppViewModel.class);
         viewModel.getMoviesEntries().observe(this, new Observer<List<MovieEntry>>() {
             @Override
             public void onChanged(@Nullable List<com.example.lifecycle.MovieEntry> movieEntries) {
