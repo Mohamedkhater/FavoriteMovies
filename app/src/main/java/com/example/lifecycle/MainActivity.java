@@ -42,12 +42,9 @@ public class MainActivity extends AppCompatActivity  {
     private static final String POPULARITY="popular";
     public static final String SAVED_MOVIES_TEXT="savedmovies";
     private Parcelable recyclerviewLayoutParcel;
-    private static final String ADAPTER="adapter";
-    private Parcelable recyclerviewAdapterParcer;
     public static final String BASE_URL="http://api.themoviedb.org/3/movie";
     AsyncTaskListener<String> listener;
     public static Database mDb;
-    private Bundle bundle;
     URL topRatedMoviesUrl;
     public URL moviesUrl;
     private FavoritesAdapter favoritesAdapter;
@@ -65,23 +62,9 @@ public class MainActivity extends AppCompatActivity  {
         super.onSaveInstanceState(outState);
         recyclerviewLayoutParcel =rv.getLayoutManager().onSaveInstanceState();
         outState.putParcelable(SAVED_MOVIES_TEXT, recyclerviewLayoutParcel);
-
-        //   list=myadapter.getMovies();
-
             outState.putParcelableArrayList(LIST_STATE,movies);
             outState.putInt(RECYCLERVIEW_ID,choice);
             outState.putParcelableArrayList(FAVORITE_ITEMS,favoriteMovies);
-
-
-
-
-        bundle=outState;
-
-
-
-        //outState.putParcelableArrayList(FAVORITE_ITEMS,favoriteMovies);
-
-
 
     }
 
@@ -91,11 +74,6 @@ public class MainActivity extends AppCompatActivity  {
         if (savedInstanceState!=null){
 
              recyclerviewLayoutParcel =savedInstanceState.getParcelable(SAVED_MOVIES_TEXT);
-
-            //movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
-
-
-
 
         }
     }
@@ -120,11 +98,7 @@ public class MainActivity extends AppCompatActivity  {
             setupViewModel();
         }
         else{
-          /*  if (bundle!=null){
-                movies=bundle.getParcelableArrayList(LIST_STATE);
-                myadapter=new MoviesAdapter(movies,this);
 
-            }*/
             rv.setAdapter(myadapter);
         }
 
@@ -179,24 +153,15 @@ public class MainActivity extends AppCompatActivity  {
                 if(choice==R.id.favorite_list_btn){
                     favoriteMovies=savedInstanceState.getParcelableArrayList(FAVORITE_ITEMS);
                     favoritesAdapter=new FavoritesAdapter(this,favoriteMovies);
-
-
                 }
                 else{
-
                     movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
                     myadapter= new MoviesAdapter(movies,this);
-
                 }
 
-                //rv.setLayoutManager(layoutManager1);
                 recyclerviewLayoutParcel=savedInstanceState.getParcelable(SAVED_MOVIES_TEXT);
                 if(recyclerviewLayoutParcel!=null)
                     rv.getLayoutManager().onRestoreInstanceState(recyclerviewLayoutParcel);
-
-
-
-
 
         }
         else{

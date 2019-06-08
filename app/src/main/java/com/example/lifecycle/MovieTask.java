@@ -29,18 +29,6 @@ class MovieTask extends AsyncTask<URL,Void,String> {
         }
         public MovieTask(AsyncTaskListener listener){
             this.taskListener= listener;
-
-        }
-
-
-
-
-
-        @Override
-        protected void onPreExecute() {
-           // pBar.setVisibility(View.VISIBLE);
-          //  rv.setVisibility(View.INVISIBLE);
-
         }
 
         @Override
@@ -71,14 +59,6 @@ class MovieTask extends AsyncTask<URL,Void,String> {
             }
 
             taskListener.onComplete(s);
-            //setMoviesInViews(s);
-           // Log.d(TAG,"settins the value of response "+response);
-
-
-
-
-
-
 
 
         }

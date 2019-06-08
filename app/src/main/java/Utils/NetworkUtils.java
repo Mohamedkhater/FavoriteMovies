@@ -5,6 +5,7 @@ import android.net.Uri;
 import android.util.Log;
 import android.widget.Toast;
 
+import com.example.lifecycle.BuildConfig;
 import com.example.lifecycle.MainActivity;
 import com.example.lifecycle.Movie;
 
@@ -23,12 +24,9 @@ import java.util.Scanner;
 
 public  class NetworkUtils {
     public static final String TAG = NetworkUtils.class.getSimpleName();
-    private static final String SORT_BY = "sort_by";
-    private static final String TOP_RATED="top_rated";
     private String path;
     public static final String API_KEY = "api_key";
-    private static final String BASEURL = "api.themoviedb.org/3/discover/movie?";
-    public static final String API_KEY_VALUE = "51d850fe504b9b9ebd6df40d48d30cf4"; //TODO(1) Please insert your key.
+    public static final String API_KEY_VALUE = BuildConfig.THE_GUARDIAN_API_KEY; //TODO(1) Please insert your key.
     public NetworkUtils(String queryParam){
         this.path=queryParam;
 

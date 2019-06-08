@@ -21,14 +21,8 @@ import java.util.ArrayList;
 
 public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesViewHolder>implements Parcelable {
 
-
-
     private ArrayList<Movie>movies;
-
-
     public static final String BASE_URL="https://image.tmdb.org/t/p/w400";
-
-
     private Context context;
     public MoviesAdapter(ArrayList<Movie> movies, Context context){
         this.movies=movies;
@@ -56,17 +50,11 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         return movies;
     }
 
-
-
-
     @NonNull
     @Override
     public MoviesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
 
         View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_layout,viewGroup,false);
-
-
-
         return new MoviesViewHolder(view);
     }
 
@@ -76,20 +64,8 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         Movie bindMovie=movies.get(i);
 
         moviesViewHolder.movieName.setText(bindMovie.getTitle());
-
-
-
-
-
         Picasso.with(context).load(BASE_URL+bindMovie.getPoster_path()).into(moviesViewHolder.movieThumbnail);
-
-
-
        Intent intent= new Intent(context,DetailActivity.class);
-
-
-
-
 
     }
 
@@ -114,12 +90,7 @@ public class MoviesAdapter extends RecyclerView.Adapter<MoviesAdapter.MoviesView
         TextView movieName;
         Intent inn;
 
-
-
         private ImageView movieThumbnail;
-
-
-
         private MoviesViewHolder(@NonNull View itemView) {
             super(itemView);
             movieName=itemView.findViewById(R.id.movie_name);

@@ -10,12 +10,10 @@ public class AsyncTaskHelper implements AsyncTaskListener<String> {
     RecyclerView rv;
 
     public AsyncTaskHelper(){
-
     }
     public AsyncTaskHelper(ProgressBar progressBar, RecyclerView recyclerView){
         this.rv=recyclerView;
         this.pb=progressBar;
-
     }
 
     @Override

@@ -78,9 +78,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
 
-
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         TextView moiveName_tv;
@@ -105,7 +102,6 @@ public class DetailActivity extends AppCompatActivity {
         bb=findViewById(R.id.trailer_pb);
 
         final Intent intent=getIntent();
-      //  String action=intent.getStringExtra(MoviesAdapter.MoviesViewHolder.name);
         if (intent.hasExtra(MoviesAdapter.MoviesViewHolder.NAME)){
             movie =intent.getParcelableExtra(MoviesAdapter.MoviesViewHolder.NAME);
             String title= movie.getTitle();
@@ -168,7 +164,7 @@ public class DetailActivity extends AppCompatActivity {
 
 
                                 TextView tv=new TextView(context);
-                                tv.setText("trailer"+i);
+                                tv.setText("trailer "+i+1);
                                 tv.setTextSize(30);
                                 tv.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT));
                                 layout.addView(tv);
@@ -187,8 +183,6 @@ public class DetailActivity extends AppCompatActivity {
                                 tvs.add(tv);
 
                             }
-
-
 
 
                         } catch (JSONException e) {
@@ -230,29 +224,12 @@ public class DetailActivity extends AppCompatActivity {
                 };
                 reviewsListener.launchTask(urlReviews);
 
-        /*    DetailTask detailTask1= new DetailTask(true);
-            detailTask1.execute(urlReviews);*/
 
             } catch (MalformedURLException e) {
                 e.printStackTrace();
             }
 
         }
-
-
-
-
-      //  final Intent ReviewsActivityIntent= new Intent(this,ReviewsActivity.class);
-
-
-
-
-
-
-
-
-
-
 
     }
 
@@ -277,17 +254,11 @@ public class DetailActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         data=mDb.movieTaskDao().loadMovieById(movieId);
-
-
-
                                 if (data==null){
                                     AppExecutors.getInstance().getDiskIO().execute(new Runnable() {
                                         @Override
                                         public void run() {
                                             mDb.movieTaskDao().insertMovie(new MovieEntry(movieId,movieName,description,imagePath,voteAverage,releaseDate));
-
-
-
 
                                         }
                                     });
@@ -301,19 +272,13 @@ public class DetailActivity extends AppCompatActivity {
                                         public void run() {
                                             mDb.movieTaskDao().deleteMovie(data);
 
-
                                         }
                                     });
 
-
-
                                 }
-
 
                     }
                 });
-
-
 
         }
 
