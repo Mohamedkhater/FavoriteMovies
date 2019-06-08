@@ -2,13 +2,17 @@ package com.example.lifecycle;
 
 import android.content.Context;
 import android.content.Intent;
+import android.media.Image;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +36,15 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
     @NonNull
     @Override
     public FavoritesViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.favorite_item,viewGroup,false);
+        View view= LayoutInflater.from(viewGroup.getContext()).inflate(R.layout.list_layout,viewGroup,false);
         return new FavoritesViewHolder(view);
     }
 
     @Override
     public void onBindViewHolder(@NonNull FavoritesViewHolder favoritesViewHolder, int i) {
         favoritesViewHolder.favoriteName_tv.setText(mMoviesEntries.get(i).getTitle());
+        Picasso.with(context).load(MoviesAdapter.BASE_URL+mMoviesEntries.get(i).getImagePath()).into(favoritesViewHolder.movieThumbnail);
+
 
     }
 
@@ -49,11 +55,14 @@ public class FavoritesAdapter extends RecyclerView.Adapter<FavoritesAdapter.Favo
 
     public class FavoritesViewHolder extends RecyclerView.ViewHolder{
         TextView favoriteName_tv;
+        ImageView movieThumbnail;
         final FavoritesViewHolder viewHolder=this;
 
         public FavoritesViewHolder(@NonNull View itemView) {
             super(itemView);
-            favoriteName_tv=itemView.findViewById(R.id.favorite_list_item);
+            favoriteName_tv=itemView.findViewById(R.id.movie_name);
+            movieThumbnail=itemView.findViewById(R.id.movie_image);
+
             itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

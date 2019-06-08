@@ -37,6 +37,7 @@ public class MainActivity extends AppCompatActivity  {
 
     ArrayList<Movie> mPopularList;
     public static com.example.lifecycle.AppViewModel viewModel;
+    public int choice=0;
     private static final String TOP_RATED_MOVIES="top_rated";
     private static final String POPULARITY="popular";
     public static final String SAVED_MOVIES_TEXT="savedmovies";
@@ -66,15 +67,14 @@ public class MainActivity extends AppCompatActivity  {
         outState.putParcelable(SAVED_MOVIES_TEXT, recyclerviewLayoutParcel);
 
         //   list=myadapter.getMovies();
-        if (rv==findViewById(R.id.movies_rv)){
-            outState.putParcelableArrayList(LIST_STATE,movies);
-            outState.putInt(RECYCLERVIEW_ID,R.id.movies_rv);
 
-        }
-        else{
-            outState.putInt(RECYCLERVIEW_ID,R.id.favorites_rv);
+            outState.putParcelableArrayList(LIST_STATE,movies);
+            outState.putInt(RECYCLERVIEW_ID,choice);
             outState.putParcelableArrayList(FAVORITE_ITEMS,favoriteMovies);
-        }
+
+
+
+
         bundle=outState;
 
 
@@ -91,7 +91,8 @@ public class MainActivity extends AppCompatActivity  {
         if (savedInstanceState!=null){
 
              recyclerviewLayoutParcel =savedInstanceState.getParcelable(SAVED_MOVIES_TEXT);
-             //movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
+
+            //movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
 
 
 
@@ -113,9 +114,9 @@ public class MainActivity extends AppCompatActivity  {
     protected void onResume() {
         super.onResume();
 
-        if (rv==findViewById(R.id.favorites_rv)){
+        if (choice==R.id.favorite_list_btn){
             rv.setAdapter(favoritesAdapter);
-            rv.setLayoutManager(layoutManager);
+            rv.setLayoutManager(layoutManager1);
             setupViewModel();
         }
         else{
@@ -125,7 +126,6 @@ public class MainActivity extends AppCompatActivity  {
 
             }*/
             rv.setAdapter(myadapter);
-            rv.setLayoutManager(layoutManager1);
         }
 
 
@@ -140,8 +140,11 @@ public class MainActivity extends AppCompatActivity  {
         topRatedMoviesUrl= new NetworkUtils(TOP_RATED_MOVIES).makeURLFromString(BASE_URL);
 
         moviesUrl=new NetworkUtils(POPULARITY).makeURLFromString(BASE_URL);
+        rv=findViewById(R.id.movies_rv);
         layoutManager1= new GridLayoutManager(MainActivity.this,2);
         layoutManager= new LinearLayoutManager(this);
+        rv.setLayoutManager(layoutManager1);
+
 
 
         mDb= com.example.lifecycle.Database.getInstance(getApplicationContext());
@@ -170,27 +173,27 @@ public class MainActivity extends AppCompatActivity  {
 
 
         if(savedInstanceState!=null){
-            int persistedRvId=savedInstanceState.getInt(RECYCLERVIEW_ID);
+            choice=savedInstanceState.getInt(RECYCLERVIEW_ID);
 
-            rv=findViewById(persistedRvId);
 
-            if(persistedRvId==R.id.movies_rv){
-                    movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
-                    myadapter= new MoviesAdapter(movies,this);
-                    rv.setLayoutManager(layoutManager1);
+                if(choice==R.id.favorite_list_btn){
+                    favoriteMovies=savedInstanceState.getParcelableArrayList(FAVORITE_ITEMS);
+                    favoritesAdapter=new FavoritesAdapter(this,favoriteMovies);
+
 
                 }
                 else{
-                    favoriteMovies=savedInstanceState.getParcelableArrayList(FAVORITE_ITEMS);
-                    favoritesAdapter=new FavoritesAdapter(this,favoriteMovies);
-                    rv.setLayoutManager(layoutManager);
+
+                    movies=savedInstanceState.getParcelableArrayList(LIST_STATE);
+                    myadapter= new MoviesAdapter(movies,this);
 
                 }
 
-
+                //rv.setLayoutManager(layoutManager1);
                 recyclerviewLayoutParcel=savedInstanceState.getParcelable(SAVED_MOVIES_TEXT);
                 if(recyclerviewLayoutParcel!=null)
                     rv.getLayoutManager().onRestoreInstanceState(recyclerviewLayoutParcel);
+
 
 
 
@@ -218,6 +221,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
         if(item.getItemId()==R.id.sort_by_popularity){
+            choice=R.id.sort_by_popularity;
 
             if (rv.getLayoutManager()!=layoutManager1)
             {
@@ -235,6 +239,7 @@ public class MainActivity extends AppCompatActivity  {
 
         }
         else if(item.getItemId()==R.id.sort_by_rating){
+            choice=R.id.sort_by_rating;
            // movieTask.execute(topRatedMoviesUrl);
             if (rv.getLayoutManager()!=layoutManager1){
                 rv.setVisibility(View.INVISIBLE);
@@ -248,6 +253,7 @@ public class MainActivity extends AppCompatActivity  {
             listener.launchTask(topRatedMoviesUrl);
         }
         else if(item.getItemId()==R.id.favorite_list_btn){
+            choice=R.id.favorite_list_btn;
 
            rv.setVisibility(View.INVISIBLE);
            setupViewModel();
@@ -270,7 +276,7 @@ public class MainActivity extends AppCompatActivity  {
 
 
         myadapter= new MoviesAdapter(mPopularList,MainActivity.this);
-        //rv.setLayoutManager(layoutManager1);
+        rv.setLayoutManager(layoutManager1);
         rv.setAdapter(myadapter);
         rv.setVisibility(View.VISIBLE);
 
@@ -281,12 +287,13 @@ public class MainActivity extends AppCompatActivity  {
 
     }
     public void setupViewModel( ){
-        rv=findViewById(R.id.favorites_rv);
+        //rv=findViewById(R.id.favorites_rv);
         rv.setVisibility(View.VISIBLE);
-        rv.setLayoutManager(layoutManager);
+       // rv.setLayoutManager(layoutManager);
         favoritesAdapter=new FavoritesAdapter(this,favoriteMovies);
 
         rv.setAdapter(favoritesAdapter);
+        rv.setLayoutManager(layoutManager1);
 
         viewModel= ViewModelProviders.of(this).get(com.example.lifecycle.AppViewModel.class);
         viewModel.getMoviesEntries().observe(this, new Observer<List<MovieEntry>>() {
