@@ -26,7 +26,7 @@ public  class NetworkUtils {
     public static final String TAG = NetworkUtils.class.getSimpleName();
     private String path;
     public static final String API_KEY = "api_key";
-    public static final String API_KEY_VALUE = BuildConfig.THE_GUARDIAN_API_KEY; //TODO(1) Please insert your key.
+    public static final String API_KEY_VALUE = BuildConfig.THE_GUARDIAN_API_KEY;
     public NetworkUtils(String queryParam){
         this.path=queryParam;
 
@@ -85,11 +85,7 @@ public  class NetworkUtils {
                 movie.setBackdrop_path(movie_item.getString("backdrop_path"));
                 movie.setPoster_path(movie_item.getString("poster_path"));
 
-
                 movies.add(movie);
-
-
-
 
             }
             return movies;

@@ -3,5 +3,6 @@
     <color name="colorPrimary">#0F0F0F</color>
     <color name="colorPrimaryDark">#060606</color>
     <color name="colorAccent">#D81B60</color>
+    <color name="backgroudPoster">#991</color>
 
 </resources>

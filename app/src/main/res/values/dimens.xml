@@ -2,4 +2,5 @@
 <resources>
     <dimen name="titleSize">30sp</dimen>
     <dimen name="image_height">396dp</dimen>
+    <dimen name="posterwidth">200dp</dimen>
 </resources>

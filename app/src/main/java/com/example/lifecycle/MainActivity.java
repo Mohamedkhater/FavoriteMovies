@@ -15,7 +15,9 @@ import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.helper.ItemTouchHelper;
+import android.util.DisplayMetrics;
 import android.util.Log;
+import android.view.Display;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -55,6 +57,14 @@ public class MainActivity extends AppCompatActivity  {
    private static final String FAVORITE_ITEMS="favoriteitems";
    ArrayList<Movie>movies=new ArrayList<>();
    ArrayList<MovieEntry>favoriteMovies=new ArrayList<>();
+   private int calculateBestColSpan(){
+       int posterWidth=540;
+       Display display= getWindowManager().getDefaultDisplay();
+       DisplayMetrics metrics=new DisplayMetrics();
+       display.getMetrics(metrics);
+       float screenWidth=metrics.widthPixels;
+       return Math.round(screenWidth/posterWidth);
+   }
 
 
     @Override
@@ -115,7 +125,7 @@ public class MainActivity extends AppCompatActivity  {
 
         moviesUrl=new NetworkUtils(POPULARITY).makeURLFromString(BASE_URL);
         rv=findViewById(R.id.movies_rv);
-        layoutManager1= new GridLayoutManager(MainActivity.this,2);
+        layoutManager1= new GridLayoutManager(MainActivity.this,calculateBestColSpan());
         layoutManager= new LinearLayoutManager(this);
         rv.setLayoutManager(layoutManager1);
 
