@@ -42,13 +42,10 @@ import static java.lang.Math.round;
 public class DetailActivity extends AppCompatActivity {
     private String videoURL="http://api.themoviedb.org/3/movie/";
     TextView trailer_tv;
-    ArrayList<Uri>moviesUris=new ArrayList<>();
     private static final  String message="PLEASE CONNECT TO A NETWORK AND TRY AGAIN!";
     TextView reviews_tv;
     ProgressBar bb;
     public Movie movie;
-    LinearLayout layout;
-
     Database mDb;
     Context context=this;
     public final LifecycleOwner owner=this;
@@ -78,6 +75,7 @@ public class DetailActivity extends AppCompatActivity {
         rate=findViewById(R.id.rate_value);
         description_tv=findViewById(R.id.description);
         reviews_tv=findViewById(R.id.reviews_tv);
+        bb=findViewById(R.id.trailer_pb);
         final ImageView favorite=findViewById(R.id.favorite_btn);
         trailersRecyclerview=findViewById(R.id.trailers_rv);
 
@@ -142,7 +140,6 @@ public class DetailActivity extends AppCompatActivity {
 
 
                             bb.setVisibility(View.INVISIBLE);
-                            layout=findViewById(R.id.detail_layout);
                             trailersAdapter adapter=new trailersAdapter(jsonArray);
                             trailersRecyclerview.setLayoutManager(new LinearLayoutManager(context));
                             trailersRecyclerview.setAdapter(adapter);
