@@ -24,6 +24,6 @@ public interface MovieTaskDao {
     @Update(onConflict=OnConflictStrategy.REPLACE)
     void updateMovie(MovieEntry movieEntry);
     @Query("SELECT * FROM Movie WHERE id=:id")
-    MovieEntry loadMovieById(String id);
+    LiveData<MovieEntry> loadMovieById(String id);
 
 }
