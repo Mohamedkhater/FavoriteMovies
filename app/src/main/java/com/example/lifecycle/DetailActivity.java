@@ -41,7 +41,6 @@ import static java.lang.Math.round;
 
 public class DetailActivity extends AppCompatActivity {
     private String videoURL="http://api.themoviedb.org/3/movie/";
-    TextView trailer_tv;
     private static final  String message="PLEASE CONNECT TO A NETWORK AND TRY AGAIN!";
     TextView reviews_tv;
     ProgressBar bb;
@@ -126,7 +125,6 @@ public class DetailActivity extends AppCompatActivity {
                         {
                             bb.setVisibility(View.INVISIBLE);
                             reviews_tv.setVisibility(View.INVISIBLE);
-                            trailer_tv.setVisibility(View.INVISIBLE);
                             Toast.makeText(DetailActivity.this,message,Toast.LENGTH_LONG).show();
                             return;
 
